@@ -20,6 +20,13 @@
 		AB0316862CCFC4140064DD7A /* LiveImagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316852CCFC4140064DD7A /* LiveImagePresenter.swift */; };
 		AB03168A2CCFCA940064DD7A /* ActionPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316892CCFCA940064DD7A /* ActionPanelView.swift */; };
 		AB03168D2CCFD0050064DD7A /* LiveImageAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03168C2CCFD0050064DD7A /* LiveImageAction.swift */; };
+		AB03168F2CCFF3DB0064DD7A /* DrawPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03168E2CCFF3DB0064DD7A /* DrawPanelView.swift */; };
+		AB0316912CCFF4590064DD7A /* DrawInstrument.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316902CCFF4590064DD7A /* DrawInstrument.swift */; };
+		AB0316932CCFF4F50064DD7A /* DrawColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316922CCFF4F50064DD7A /* DrawColor.swift */; };
+		AB0316952CCFF7310064DD7A /* DefaultImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316942CCFF7310064DD7A /* DefaultImageButton.swift */; };
+		AB0316972CCFFB620064DD7A /* UIView+addCSubview.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316962CCFFB620064DD7A /* UIView+addCSubview.swift */; };
+		AB03169A2CCFFCCC0064DD7A /* SelectedColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316992CCFFCCC0064DD7A /* SelectedColorView.swift */; };
+		AB03169C2CCFFCDF0064DD7A /* InstrumentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03169B2CCFFCDF0064DD7A /* InstrumentsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +46,13 @@
 		AB0316882CCFCA6D0064DD7A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		AB0316892CCFCA940064DD7A /* ActionPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionPanelView.swift; sourceTree = "<group>"; };
 		AB03168C2CCFD0050064DD7A /* LiveImageAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageAction.swift; sourceTree = "<group>"; };
+		AB03168E2CCFF3DB0064DD7A /* DrawPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawPanelView.swift; sourceTree = "<group>"; };
+		AB0316902CCFF4590064DD7A /* DrawInstrument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawInstrument.swift; sourceTree = "<group>"; };
+		AB0316922CCFF4F50064DD7A /* DrawColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawColor.swift; sourceTree = "<group>"; };
+		AB0316942CCFF7310064DD7A /* DefaultImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageButton.swift; sourceTree = "<group>"; };
+		AB0316962CCFFB620064DD7A /* UIView+addCSubview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+addCSubview.swift"; sourceTree = "<group>"; };
+		AB0316992CCFFCCC0064DD7A /* SelectedColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedColorView.swift; sourceTree = "<group>"; };
+		AB03169B2CCFFCDF0064DD7A /* InstrumentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +130,8 @@
 			children = (
 				AB0316812CCF993C0064DD7A /* UIColor+Hex.swift */,
 				AB0316832CCF99790064DD7A /* Logger.swift */,
+				AB0316942CCFF7310064DD7A /* DefaultImageButton.swift */,
+				AB0316962CCFFB620064DD7A /* UIView+addCSubview.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -123,6 +139,7 @@
 		AB0316872CCFCA3B0064DD7A /* views */ = {
 			isa = PBXGroup;
 			children = (
+				AB0316982CCFFCBC0064DD7A /* drawPanel */,
 				AB0316682CCF93660064DD7A /* LiveImageViewController.swift */,
 				AB03167B2CCF98930064DD7A /* LiveImageView.swift */,
 				AB0316892CCFCA940064DD7A /* ActionPanelView.swift */,
@@ -134,8 +151,20 @@
 			isa = PBXGroup;
 			children = (
 				AB03168C2CCFD0050064DD7A /* LiveImageAction.swift */,
+				AB0316902CCFF4590064DD7A /* DrawInstrument.swift */,
+				AB0316922CCFF4F50064DD7A /* DrawColor.swift */,
 			);
 			path = viewModels;
+			sourceTree = "<group>";
+		};
+		AB0316982CCFFCBC0064DD7A /* drawPanel */ = {
+			isa = PBXGroup;
+			children = (
+				AB03168E2CCFF3DB0064DD7A /* DrawPanelView.swift */,
+				AB0316992CCFFCCC0064DD7A /* SelectedColorView.swift */,
+				AB03169B2CCFFCDF0064DD7A /* InstrumentsView.swift */,
+			);
+			path = drawPanel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -209,16 +238,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB0316822CCF993C0064DD7A /* UIColor+Hex.swift in Sources */,
+				AB03168F2CCFF3DB0064DD7A /* DrawPanelView.swift in Sources */,
 				AB03167C2CCF98930064DD7A /* LiveImageView.swift in Sources */,
 				AB03167F2CCF98CC0064DD7A /* Colors.swift in Sources */,
 				AB03168A2CCFCA940064DD7A /* ActionPanelView.swift in Sources */,
+				AB0316932CCFF4F50064DD7A /* DrawColor.swift in Sources */,
 				AB03167A2CCF94B90064DD7A /* LiveImageRouter.swift in Sources */,
 				AB03168D2CCFD0050064DD7A /* LiveImageAction.swift in Sources */,
+				AB0316972CCFFB620064DD7A /* UIView+addCSubview.swift in Sources */,
+				AB03169A2CCFFCCC0064DD7A /* SelectedColorView.swift in Sources */,
 				AB0316862CCFC4140064DD7A /* LiveImagePresenter.swift in Sources */,
 				AB0316732CCF93660064DD7A /* LiveImageViewController.swift in Sources */,
 				AB0316842CCF99790064DD7A /* Logger.swift in Sources */,
+				AB03169C2CCFFCDF0064DD7A /* InstrumentsView.swift in Sources */,
+				AB0316952CCFF7310064DD7A /* DefaultImageButton.swift in Sources */,
 				AB0316712CCF93660064DD7A /* AppDelegate.swift in Sources */,
 				AB0316722CCF93660064DD7A /* SceneDelegate.swift in Sources */,
+				AB0316912CCFF4590064DD7A /* DrawInstrument.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

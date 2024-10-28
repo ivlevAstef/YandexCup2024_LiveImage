@@ -9,7 +9,7 @@ import UIKit
 
 final class LiveImageViewController: UIViewController {
 
-    private(set) lazy var liveImageView: LiveImageView = LiveImageView()
+    private(set) lazy var liveImageView = LiveImageView()
 
     var retainScreenObjects: [AnyObject] = []
 

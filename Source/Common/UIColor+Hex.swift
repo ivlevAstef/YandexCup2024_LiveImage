@@ -8,11 +8,20 @@
 import UIKit
 
 extension UIColor {
-    /// Создает цвет по числу вида: `0x000000`.
-    /// - Parameter hex: Число в формате `0x000000` где цифры означают RGB записанный в 16 ричном формате.
-    /// - Parameter alpha: Значение альфа канала от 0 до 1. По умолчанию 1 - полностью не прозрачный.
-    /// - Returns: Цвет соответствующий входному значения или `nil` если не удалось распарсить.
-    public static func color(hex: UInt64, alpha: CGFloat = 1.0) -> UIColor {
+    var hexColor: UInt64 {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+
+        self.getRed(&red, green: &green, blue: &blue, alpha: nil)
+
+        let redInt = UInt64(lroundf(Float(red * 255)))
+        let greenInt = UInt64(lroundf(Float(green * 255)))
+        let blueInt = UInt64(lroundf(Float(blue * 255)))
+        return redInt << 16 + greenInt << 8 + blueInt
+    }
+
+    static func color(hex: UInt64, alpha: CGFloat = 1.0) -> UIColor {
         assert(0.0 <= alpha && alpha <= 1.0, "0.0 <= alpha && alpha <= 1.0")
         let alpha = max(0.0, min(alpha, 1.0))
 
@@ -20,6 +29,15 @@ extension UIColor {
                        green: CGFloat((hex & 0x00FF00) >> 8) / 255.0,
                        blue: CGFloat((hex & 0x0000FF) >> 0) / 255.0,
                        alpha: alpha)
+    }
+
+    /// Возвращает яркость от 0 до 1. Где 0 это темный, а 1 это светлый.
+    var brightness: CGFloat {
+        guard let components = cgColor.components, components.count >= 3 else {
+            return 0.0
+        }
+
+        return (components[0] * 299.0 + components[1] * 587.0 + components[2] * 114.0) / 1000.0
     }
 }
 

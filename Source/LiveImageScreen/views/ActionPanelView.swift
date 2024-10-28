@@ -10,8 +10,8 @@ import UIKit
 
 /// Панель с элементами управления фреймами
 /// Решил не делать с помощью navigationBar - в случае если найду время, больше возможностей для кастомизации.
-final class ActionPanelView: UIView {
-    var tapOnAction: LiveImageActionSelectHandler?
+final class ActionPanelView: UIView, LiveImageActionViewProtocol {
+    var selectActionHandler: LiveImageActionSelectHandler?
 
     var availableActions: Set<LiveImageAction> = [] {
         didSet {
@@ -58,23 +58,23 @@ final class ActionPanelView: UIView {
     }
 
     private func commonInit() {
-        addSubview(leftContentView)
-        addSubview(centerContentView)
-        addSubview(rightContentView)
+        addCSubview(leftContentView)
+        addCSubview(centerContentView)
+        addCSubview(rightContentView)
 
-        leftContentView.addSubview(undoButton)
-        leftContentView.addSubview(redoButton)
+        leftContentView.addCSubview(undoButton)
+        leftContentView.addCSubview(redoButton)
 
-        centerContentView.addSubview(removeFrameButton)
-        centerContentView.addSubview(addFrameButton)
-        centerContentView.addSubview(showFramesButton)
+        centerContentView.addCSubview(removeFrameButton)
+        centerContentView.addCSubview(addFrameButton)
+        centerContentView.addCSubview(showFramesButton)
 
-        rightContentView.addSubview(pauseButton)
-        rightContentView.addSubview(playButton)
+        rightContentView.addCSubview(pauseButton)
+        rightContentView.addCSubview(playButton)
 
         for button in actionButtons {
             button.addAction(UIAction { [weak self, action = button.action] _ in
-                self?.tapOnAction?(action)
+                self?.selectActionHandler?(action)
             }, for: .touchUpInside)
         }
 
@@ -82,14 +82,6 @@ final class ActionPanelView: UIView {
     }
 
     private func makeConstraints() {
-        // Без snapkit не привычно...
-        for view in subviews {
-            view.translatesAutoresizingMaskIntoConstraints = false
-            for subview in view.subviews {
-                subview.translatesAutoresizingMaskIntoConstraints = false
-            }
-        }
-
         let inset = 16.0
         let space = 8.0
         NSLayoutConstraint.activate([
@@ -137,29 +129,12 @@ final class ActionPanelView: UIView {
     }
 }
 
-private final class ActionButton: UIButton {
+private final class ActionButton: DefaultImageButton {
     let action: LiveImageAction
 
     init(action: LiveImageAction) {
         self.action = action
-        super.init(frame: .zero)
-
-        let image = action.image
-        setImage(image?.withTintColor(Colors.textColor), for: .normal)
-        setImage(image?.withTintColor(Colors.selectColor), for: .selected)
-        setImage(image?.withTintColor(Colors.selectColor), for: .highlighted)
-        setImage(image?.withTintColor(Colors.unaccentColor), for: .disabled)
-
-        translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            widthAnchor.constraint(equalToConstant: 32.0),
-            heightAnchor.constraint(equalToConstant: 32.0)
-        ])
-    }
-    
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(image: action.image)
     }
 }
 

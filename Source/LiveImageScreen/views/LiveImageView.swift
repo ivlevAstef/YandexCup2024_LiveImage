@@ -9,17 +9,11 @@ import Foundation
 import UIKit
 
 final class LiveImageView: UIView, LiveImageViewProtocol {
-    var actionSelectHandler: LiveImageActionSelectHandler? {
-        get { actionPanel.tapOnAction }
-        set { actionPanel.tapOnAction = newValue }
-    }
+    var actionView: LiveImageActionViewProtocol { actionPanel }
+    var drawView: LiveImageDrawViewProtocol { drawPanel }
 
-    var availableActions: Set<LiveImageAction> {
-        get { actionPanel.availableActions }
-        set { actionPanel.availableActions = newValue }
-    }
-
-    private let actionPanel: ActionPanelView = ActionPanelView()
+    private let actionPanel = ActionPanelView()
+    private let drawPanel = DrawPanelView()
 
     init() {
         super.init(frame: .zero)
@@ -35,19 +29,26 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
     private func commonInit() {
         backgroundColor = Colors.backgroundColor
 
-        addSubview(actionPanel)
+        addCSubview(actionPanel)
+        addCSubview(drawPanel)
 
         makeConstraints()
+
+        drawPanel.setSuperView(self)
     }
 
     private func makeConstraints() {
-
-        actionPanel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             actionPanel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 16.0),
             actionPanel.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
             actionPanel.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
-            actionPanel.heightAnchor.constraint(equalToConstant: 32.0)
+            actionPanel.heightAnchor.constraint(equalToConstant: 32.0),
+
+            drawPanel.leftAnchor.constraint(greaterThanOrEqualTo: safeAreaLayoutGuide.leftAnchor),
+            drawPanel.rightAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.rightAnchor),
+            drawPanel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            drawPanel.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+            drawPanel.heightAnchor.constraint(equalToConstant: 32.0)
         ])
     }
 
