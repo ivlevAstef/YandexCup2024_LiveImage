@@ -7,6 +7,8 @@
 
 import Foundation
 
+let log = Logger()
+
 /// Ну не могу я жить без логгера. Конечно с радостью бы свой затащил (https://github.com/ivlevAstef/FastLogger), но побоялся.
 final class Logger {
 

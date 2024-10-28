@@ -9,11 +9,12 @@ import UIKit
 
 final class LiveImageViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
+    private(set) lazy var liveImageView: LiveImageView = LiveImageView()
 
-        view.backgroundColor = .red
+    var retainScreenObjects: [AnyObject] = []
+
+    override func loadView() {
+        view = liveImageView
     }
 }
 

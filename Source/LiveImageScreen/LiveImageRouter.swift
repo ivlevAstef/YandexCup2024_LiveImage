@@ -9,16 +9,23 @@ import Foundation
 import UIKit
 
 final class LiveImageRouter {
-    let navigationController: UINavigationController
-    private let rootViewController: LiveImageViewController
+    private(set) lazy var navigationController = UINavigationController(nibName: nil, bundle: nil)
 
     init() {
-        let rootVC = LiveImageViewController(nibName: nil, bundle: nil)
-        self.navigationController = UINavigationController(rootViewController: rootVC)
-        self.rootViewController = rootVC
+        navigationController.setNavigationBarHidden(true, animated: false)
     }
 
     func start() {
+        let rootVC = makeLiveImageViewScreen()
+        navigationController.setViewControllers([rootVC], animated: false)
+    }
 
+    private func makeLiveImageViewScreen() -> LiveImageViewController {
+        let vc = LiveImageViewController(nibName: nil, bundle: nil)
+        let presenter = LiveImagePresenter(view: vc.liveImageView)
+
+        vc.retainScreenObjects = [self, presenter]
+
+        return vc
     }
 }

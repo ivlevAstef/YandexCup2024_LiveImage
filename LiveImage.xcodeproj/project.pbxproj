@@ -17,6 +17,9 @@
 		AB03167F2CCF98CC0064DD7A /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03167E2CCF98CC0064DD7A /* Colors.swift */; };
 		AB0316822CCF993C0064DD7A /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316812CCF993C0064DD7A /* UIColor+Hex.swift */; };
 		AB0316842CCF99790064DD7A /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316832CCF99790064DD7A /* Logger.swift */; };
+		AB0316862CCFC4140064DD7A /* LiveImagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316852CCFC4140064DD7A /* LiveImagePresenter.swift */; };
+		AB03168A2CCFCA940064DD7A /* ActionPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316892CCFCA940064DD7A /* ActionPanelView.swift */; };
+		AB03168D2CCFD0050064DD7A /* LiveImageAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03168C2CCFD0050064DD7A /* LiveImageAction.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +35,10 @@
 		AB03167E2CCF98CC0064DD7A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		AB0316812CCF993C0064DD7A /* UIColor+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
 		AB0316832CCF99790064DD7A /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		AB0316852CCFC4140064DD7A /* LiveImagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImagePresenter.swift; sourceTree = "<group>"; };
+		AB0316882CCFCA6D0064DD7A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		AB0316892CCFCA940064DD7A /* ActionPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionPanelView.swift; sourceTree = "<group>"; };
+		AB03168C2CCFD0050064DD7A /* LiveImageAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageAction.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +55,7 @@
 		AB0316462CCF8F380064DD7A = {
 			isa = PBXGroup;
 			children = (
+				AB0316882CCFCA6D0064DD7A /* README.md */,
 				AB0316692CCF93660064DD7A /* Source */,
 				AB0316702CCF93660064DD7A /* Resources */,
 				AB0316502CCF8F380064DD7A /* Products */,
@@ -87,9 +95,10 @@
 		AB0316782CCF94960064DD7A /* LiveImageScreen */ = {
 			isa = PBXGroup;
 			children = (
-				AB0316682CCF93660064DD7A /* LiveImageViewController.swift */,
+				AB03168B2CCFCFF20064DD7A /* viewModels */,
+				AB0316872CCFCA3B0064DD7A /* views */,
 				AB0316792CCF94B90064DD7A /* LiveImageRouter.swift */,
-				AB03167B2CCF98930064DD7A /* LiveImageView.swift */,
+				AB0316852CCFC4140064DD7A /* LiveImagePresenter.swift */,
 			);
 			path = LiveImageScreen;
 			sourceTree = "<group>";
@@ -109,6 +118,24 @@
 				AB0316832CCF99790064DD7A /* Logger.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		AB0316872CCFCA3B0064DD7A /* views */ = {
+			isa = PBXGroup;
+			children = (
+				AB0316682CCF93660064DD7A /* LiveImageViewController.swift */,
+				AB03167B2CCF98930064DD7A /* LiveImageView.swift */,
+				AB0316892CCFCA940064DD7A /* ActionPanelView.swift */,
+			);
+			path = views;
+			sourceTree = "<group>";
+		};
+		AB03168B2CCFCFF20064DD7A /* viewModels */ = {
+			isa = PBXGroup;
+			children = (
+				AB03168C2CCFD0050064DD7A /* LiveImageAction.swift */,
+			);
+			path = viewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,7 +211,10 @@
 				AB0316822CCF993C0064DD7A /* UIColor+Hex.swift in Sources */,
 				AB03167C2CCF98930064DD7A /* LiveImageView.swift in Sources */,
 				AB03167F2CCF98CC0064DD7A /* Colors.swift in Sources */,
+				AB03168A2CCFCA940064DD7A /* ActionPanelView.swift in Sources */,
 				AB03167A2CCF94B90064DD7A /* LiveImageRouter.swift in Sources */,
+				AB03168D2CCFD0050064DD7A /* LiveImageAction.swift in Sources */,
+				AB0316862CCFC4140064DD7A /* LiveImagePresenter.swift in Sources */,
 				AB0316732CCF93660064DD7A /* LiveImageViewController.swift in Sources */,
 				AB0316842CCF99790064DD7A /* Logger.swift in Sources */,
 				AB0316712CCF93660064DD7A /* AppDelegate.swift in Sources */,
