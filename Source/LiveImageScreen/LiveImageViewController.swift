@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LiveImageViewController: UIViewController {
+final class LiveImageViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

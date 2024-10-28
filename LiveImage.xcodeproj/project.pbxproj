@@ -13,6 +13,10 @@
 		AB0316742CCF93660064DD7A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB03166A2CCF93660064DD7A /* Assets.xcassets */; };
 		AB0316762CCF93660064DD7A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB03166D2CCF93660064DD7A /* LaunchScreen.storyboard */; };
 		AB03167A2CCF94B90064DD7A /* LiveImageRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316792CCF94B90064DD7A /* LiveImageRouter.swift */; };
+		AB03167C2CCF98930064DD7A /* LiveImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03167B2CCF98930064DD7A /* LiveImageView.swift */; };
+		AB03167F2CCF98CC0064DD7A /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03167E2CCF98CC0064DD7A /* Colors.swift */; };
+		AB0316822CCF993C0064DD7A /* UIColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316812CCF993C0064DD7A /* UIColor+Hex.swift */; };
+		AB0316842CCF99790064DD7A /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316832CCF99790064DD7A /* Logger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +28,10 @@
 		AB03166B2CCF93660064DD7A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AB03166C2CCF93660064DD7A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AB0316792CCF94B90064DD7A /* LiveImageRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageRouter.swift; sourceTree = "<group>"; };
+		AB03167B2CCF98930064DD7A /* LiveImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageView.swift; sourceTree = "<group>"; };
+		AB03167E2CCF98CC0064DD7A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		AB0316812CCF993C0064DD7A /* UIColor+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Hex.swift"; sourceTree = "<group>"; };
+		AB0316832CCF99790064DD7A /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +65,8 @@
 		AB0316692CCF93660064DD7A /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				AB0316802CCF99110064DD7A /* Common */,
+				AB03167D2CCF98B50064DD7A /* Style */,
 				AB0316782CCF94960064DD7A /* LiveImageScreen */,
 				AB0316662CCF93660064DD7A /* AppDelegate.swift */,
 				AB0316672CCF93660064DD7A /* SceneDelegate.swift */,
@@ -79,8 +89,26 @@
 			children = (
 				AB0316682CCF93660064DD7A /* LiveImageViewController.swift */,
 				AB0316792CCF94B90064DD7A /* LiveImageRouter.swift */,
+				AB03167B2CCF98930064DD7A /* LiveImageView.swift */,
 			);
 			path = LiveImageScreen;
+			sourceTree = "<group>";
+		};
+		AB03167D2CCF98B50064DD7A /* Style */ = {
+			isa = PBXGroup;
+			children = (
+				AB03167E2CCF98CC0064DD7A /* Colors.swift */,
+			);
+			path = Style;
+			sourceTree = "<group>";
+		};
+		AB0316802CCF99110064DD7A /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				AB0316812CCF993C0064DD7A /* UIColor+Hex.swift */,
+				AB0316832CCF99790064DD7A /* Logger.swift */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,8 +181,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB0316822CCF993C0064DD7A /* UIColor+Hex.swift in Sources */,
+				AB03167C2CCF98930064DD7A /* LiveImageView.swift in Sources */,
+				AB03167F2CCF98CC0064DD7A /* Colors.swift in Sources */,
 				AB03167A2CCF94B90064DD7A /* LiveImageRouter.swift in Sources */,
 				AB0316732CCF93660064DD7A /* LiveImageViewController.swift in Sources */,
+				AB0316842CCF99790064DD7A /* Logger.swift in Sources */,
 				AB0316712CCF93660064DD7A /* AppDelegate.swift in Sources */,
 				AB0316722CCF93660064DD7A /* SceneDelegate.swift in Sources */,
 			);
