@@ -9,7 +9,9 @@ import UIKit
 
 private enum Consts {
     /// Максимальная глубина хранения истории изменений изображений.
-    static let maxRecordCapacity = 10
+    static let maxRecordCapacity = 16
+    /// Максимальная глубина хранения истории изменений изображений, для неактивных кадров.
+    static let maxCleanedRecordCapacity = 2
 }
 
 struct Canvas {
@@ -17,17 +19,20 @@ struct Canvas {
 
     final class Frame {
         var currentRecord: Record? { records.indices.contains(currentRecordIndex) ? records[currentRecordIndex] : nil }
-        var canUndo: Bool { currentRecordIndex >= 0 }
+        var canUndo: Bool { currentRecordIndex > 0 || (currentStartIndex == 0 && currentRecordIndex == 0) }
         var canRedo: Bool { currentRecordIndex < records.count - 1 }
 
         private var records: [Record] = []
         private var currentRecordIndex: Int = -1
+        private var currentStartIndex: Int = 0
+
+        init() {}
 
         func addRecord(_ record: Record) {
             // Если мы делали undo, а потом добавили новый фрейм, то все redo шаги мы трём.
             records = Array(records.prefix(currentRecordIndex + 1))
             records.append(record)
-            records = Array(records.suffix(Consts.maxRecordCapacity))
+            suffix(Consts.maxRecordCapacity)
             currentRecordIndex = records.count - 1
         }
 
@@ -47,8 +52,28 @@ struct Canvas {
             records = []
             currentRecordIndex = -1
         }
+        func cleanHistory() {
+            // Затираем историю если было undo
+            records = Array(records.prefix(currentRecordIndex + 1))
+            // Стираем лишнее - чтобы память не так быстро забивалась
+            suffix(Consts.maxCleanedRecordCapacity)
+            currentRecordIndex = records.count - 1
+        }
 
-        init() {}
+        fileprivate func copy() -> Frame {
+            let result = Frame()
+            result.records = records
+            result.currentRecordIndex = currentRecordIndex
+            result.currentStartIndex = currentStartIndex
+            return result
+        }
+
+        private func suffix(_ count: Int) {
+            if records.count > count {
+                currentStartIndex += records.count - count
+                records = Array(records.suffix(count))
+            }
+        }
     }
 
     var haveMoreFrames: Bool { frames.count > 1 }
@@ -68,6 +93,7 @@ struct Canvas {
     private(set) var currentFrameIndex: Int = 0
 
     mutating func addFrame() {
+        cleanHistory()
         frames.append(Frame())
         currentFrameIndex = frames.count - 1
     }
@@ -93,19 +119,29 @@ struct Canvas {
 
     mutating func dublicateFrame(from index: Int) {
         if frames.indices.contains(index) {
-            frames.append(frames[index])
+            let frame = frames[index].copy()
+            cleanHistory()
+            frames.append(frame)
             currentFrameIndex = frames.count - 1
         }
     }
 
     mutating func changeFrameIndex(_ index: Int) {
         if frames.indices.contains(index) {
+            currentFrame.cleanHistory()
             currentFrameIndex = index
         }
     }
 
     mutating func cleanFrame() {
         currentFrame.clean()
+    }
+
+    /// Без этого очень быстро память заполняеться. Конечно в идеале, можно было выгружать на диск, а потом возвращать с диска, но этого не требуется.
+    mutating func cleanHistory() {
+        for frame in frames {
+            frame.cleanHistory()
+        }
     }
 }
 

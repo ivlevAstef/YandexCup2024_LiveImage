@@ -51,6 +51,14 @@ final class DrawPanelView: UIView, LiveImageDrawViewProtocol {
     func setEnable(_ enable: Bool) {
         isUserInteractionEnabled = enable
         instrumentsView.setEnable(enable)
+
+        if !enable {
+            hidePopup()
+        }
+    }
+
+    func hidePopup() {
+        selectedColorView.hidePopup()
     }
 
     private func commonInit() {

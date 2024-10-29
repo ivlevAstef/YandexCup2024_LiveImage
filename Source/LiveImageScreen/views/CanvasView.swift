@@ -126,7 +126,7 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         layer.cornerCurve = .continuous
         clipsToBounds = true
 
-        prevFrameRecordView.alpha = 0.5
+        prevFrameRecordView.alpha = 0.3
 
         backgroundImageView.contentMode = .scaleAspectFill
 

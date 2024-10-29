@@ -40,7 +40,7 @@ final class LiveImageFramesPanelView: UIView, LiveImageFramesViewProtocol {
         set { framesView.selectedFrameIndex = newValue }
     }
 
-    private let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+    private let blurEffectView = CustomIntensityVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterial), intensity: 0.5)
     private let contentView = UIView(frame: .zero)
     private let framesView = FramesView()
     private var hidePositionConstraint: NSLayoutConstraint?
@@ -203,6 +203,9 @@ private final class FramesView: UICollectionView, UICollectionViewDelegate, UICo
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if selectedFrameIndex == indexPath.row {
+            return
+        }
         selectedFrameChangedHandler?(indexPath.row)
     }
 }

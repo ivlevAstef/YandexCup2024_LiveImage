@@ -30,6 +30,7 @@
 		AB03169E2CD0951E0064DD7A /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03169D2CD0951E0064DD7A /* CanvasView.swift */; };
 		AB0316A02CD097A10064DD7A /* Canvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03169F2CD097A10064DD7A /* Canvas.swift */; };
 		AB0316A22CD11D9C0064DD7A /* LiveImageFramesPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316A12CD11D9C0064DD7A /* LiveImageFramesPanelView.swift */; };
+		ABBE1B962CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABBE1B952CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +60,7 @@
 		AB03169D2CD0951E0064DD7A /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
 		AB03169F2CD097A10064DD7A /* Canvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Canvas.swift; sourceTree = "<group>"; };
 		AB0316A12CD11D9C0064DD7A /* LiveImageFramesPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageFramesPanelView.swift; sourceTree = "<group>"; };
+		ABBE1B952CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomIntensityVisualEffectView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +140,7 @@
 				AB0316832CCF99790064DD7A /* Logger.swift */,
 				AB0316942CCFF7310064DD7A /* DefaultImageButton.swift */,
 				AB0316962CCFFB620064DD7A /* UIView+addCSubview.swift */,
+				ABBE1B952CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -249,6 +252,7 @@
 				AB03169E2CD0951E0064DD7A /* CanvasView.swift in Sources */,
 				AB0316822CCF993C0064DD7A /* UIColor+Hex.swift in Sources */,
 				AB03168F2CCFF3DB0064DD7A /* DrawPanelView.swift in Sources */,
+				ABBE1B962CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift in Sources */,
 				AB0316A02CD097A10064DD7A /* Canvas.swift in Sources */,
 				AB03167C2CCF98930064DD7A /* LiveImageView.swift in Sources */,
 				AB03167F2CCF98CC0064DD7A /* Colors.swift in Sources */,

@@ -50,6 +50,12 @@ final class SelectedColorView: UIView {
         ])
     }
 
+    func hidePopup() {
+        if paletteIsShown {
+            hidePalette()
+        }
+    }
+
     private func commonInit() {
         paletteIsShown = false
         colorPaletteView.isHidden = true
@@ -113,7 +119,7 @@ final class SelectedColorView: UIView {
 private final class ColorPaletteView: UIView {
     var selectColorHandler: LiveImageColorSelectHandler?
 
-    private let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+    private let blurEffectView = CustomIntensityVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterial), intensity: 0.3)
 
     private let moreColorsButton = MoreColorsButton()
     private let blackColorButton = ColoredButton(color: .black)
@@ -138,7 +144,8 @@ private final class ColorPaletteView: UIView {
     }
 
     private func commonInit() {
-        layer.cornerRadius = 8.0
+        layer.cornerCurve = .continuous
+        layer.cornerRadius = 16.0
         layer.masksToBounds = true
 
         addCSubview(blurEffectView)

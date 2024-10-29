@@ -33,6 +33,8 @@ protocol LiveImageDrawViewProtocol: AnyObject {
     var selectedWidth: CGFloat { get set }
 
     func setEnable(_ enable: Bool)
+
+    func hidePopup()
 }
 
 protocol LiveImageCanvasViewProtocol: AnyObject {
@@ -207,6 +209,7 @@ final class LiveImagePresenter {
 
     private func showFramesView() {
         view.action.framesIsShown = true
+        view.draw.hidePopup()
         view.frames.show()
     }
 
