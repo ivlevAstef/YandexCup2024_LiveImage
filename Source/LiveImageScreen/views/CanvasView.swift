@@ -21,7 +21,7 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     var width: CGFloat = 5.0 {
         didSet { updateDrawLayerStyle() }
     }
-    var color: DrawColor = .red {
+    var color: DrawColor = .black {
         didSet { updateDrawLayerStyle() }
     }
 
@@ -32,6 +32,8 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     var currentRecord: Canvas.Record? {
         didSet { currentRecordView.image = currentRecord }
     }
+
+    var emptyRecord: Canvas.Record { return emptyImage() }
 
     private var pathPositions: [CGPoint] = []
     private let drawLayer = CAShapeLayer()
@@ -190,7 +192,7 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
             drawLayer.strokeColor = color.cgColor
         case .brush:
             drawLayer.shadowColor = color.cgColor
-            drawLayer.shadowRadius = width * 0.25
+            drawLayer.shadowRadius = width * 0.15
             drawLayer.shadowOpacity = 1.0
             drawLayer.shadowOffset = .zero
             drawLayer.lineWidth = 0.0
@@ -225,6 +227,11 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
             currentRecordView.draw(bounds)
             drawView.drawHierarchy(in: bounds, afterScreenUpdates: false)
         }
+    }
+
+    private func emptyImage() -> UIImage {
+        let renderer = UIGraphicsImageRenderer(bounds: bounds)
+        return renderer.image { _ in }
     }
 
     private func makeErasedImage() -> UIImage {

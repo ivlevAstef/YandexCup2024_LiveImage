@@ -12,10 +12,12 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
     var action: LiveImageActionViewProtocol { actionPanel }
     var canvas: LiveImageCanvasViewProtocol { canvasView }
     var draw: LiveImageDrawViewProtocol { drawPanel }
+    var frames: LiveImageFramesViewProtocol { framesPanel }
 
     private let actionPanel = ActionPanelView()
     private let canvasView = CanvasView()
     private let drawPanel = DrawPanelView()
+    private let framesPanel = LiveImageFramesPanelView()
 
     init() {
         super.init(frame: .zero)
@@ -34,6 +36,7 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
         addCSubview(actionPanel)
         addCSubview(canvasView)
         addCSubview(drawPanel)
+        addCSubview(framesPanel)
 
         makeConstraints()
 
@@ -57,7 +60,12 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
             drawPanel.rightAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.rightAnchor),
             drawPanel.centerXAnchor.constraint(equalTo: centerXAnchor),
             drawPanel.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
-            drawPanel.heightAnchor.constraint(equalToConstant: 32.0)
+            drawPanel.heightAnchor.constraint(equalToConstant: 32.0),
+
+            framesPanel.topAnchor.constraint(equalTo: topAnchor),
+            framesPanel.leftAnchor.constraint(equalTo: leftAnchor),
+            framesPanel.rightAnchor.constraint(equalTo: rightAnchor),
+            framesPanel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 

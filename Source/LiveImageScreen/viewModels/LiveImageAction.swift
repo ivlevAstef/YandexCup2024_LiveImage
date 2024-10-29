@@ -11,7 +11,7 @@ enum LiveImageAction: Hashable {
 
     case removeFrame
     case addFrame
-    case showFrames
+    case toggleFrames
 
     case pause
     case play

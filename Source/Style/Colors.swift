@@ -13,4 +13,5 @@ final class Colors {
     static let textColor = UIColor.color(hex: 0xFFFFFF)
     static let unaccentColor = UIColor.color(hex: 0x8B8B8B)
     static let selectColor = UIColor.color(hex: 0xA8DB10)
+    static let errorColor = UIColor.color(hex: 0xFF0000)
 }

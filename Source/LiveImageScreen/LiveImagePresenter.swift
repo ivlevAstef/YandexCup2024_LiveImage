@@ -13,9 +13,15 @@ typealias LiveImageColorSelectHandler = (_ color: DrawColor) -> Void
 
 typealias LiveImageRecordMakedHandler = (Canvas.Record) -> Void
 
+typealias LiveImageSelectedFrameChangedHandler = (Int) -> Void
+typealias LiveImageDeleteFrameHandler = (Int) -> Void
+typealias LiveImageDublicateFrameHandler = (Int) -> Void
+
 protocol LiveImageActionViewProtocol: AnyObject {
     var selectActionHandler: LiveImageActionSelectHandler? { get set }
     var availableActions: Set<LiveImageAction> { get set }
+
+    var framesIsShown: Bool { get set }
 }
 
 protocol LiveImageDrawViewProtocol: AnyObject {
@@ -39,14 +45,29 @@ protocol LiveImageCanvasViewProtocol: AnyObject {
     var prevFrameRecord: Canvas.Record? { get set }
     var currentRecord: Canvas.Record? { get set }
 
+    var emptyRecord: Canvas.Record { get }
+
     func runPlay(_ records: [Canvas.Record])
     func stopPlay()
+}
+
+protocol LiveImageFramesViewProtocol: AnyObject {
+    var selectedFrameChangedHandler: LiveImageSelectedFrameChangedHandler? { get set }
+    var deleteFrameHandler: LiveImageDeleteFrameHandler? { get set }
+    var dublicateFrameHandler: LiveImageDublicateFrameHandler? { get set }
+
+    var recordOfFrames: [Canvas.Record] { get set }
+    var selectedFrameIndex: Int { get set }
+
+    func show()
+    func hide()
 }
 
 protocol LiveImageViewProtocol: AnyObject {
     var action: LiveImageActionViewProtocol { get }
     var canvas: LiveImageCanvasViewProtocol { get }
     var draw: LiveImageDrawViewProtocol { get }
+    var frames: LiveImageFramesViewProtocol { get }
 }
 
 final class LiveImagePresenter {
@@ -87,6 +108,25 @@ final class LiveImagePresenter {
             }
         }
 
+        view.frames.selectedFrameChangedHandler = { [weak self] newIndex in
+            if let self {
+                self.canvas.changeFrameIndex(newIndex)
+                self.updateUI()
+            }
+        }
+        view.frames.deleteFrameHandler = { [weak self] deleteIndex in
+            if let self {
+                self.canvas.removeFrame(in: deleteIndex)
+                self.updateUI()
+            }
+        }
+        view.frames.dublicateFrameHandler = { [weak self] dublicateIndex in
+            if let self {
+                self.canvas.dublicateFrame(from: dublicateIndex)
+                self.updateUI()
+            }
+        }
+
         updateUI()
     }
 
@@ -100,14 +140,21 @@ final class LiveImagePresenter {
             canvas.addFrame()
         case .removeFrame:
             canvas.removeFrame()
+        case .toggleFrames:
+            if view.action.framesIsShown {
+                hideFramesView()
+            } else {
+                showFramesView()
+            }
         case .play:
             isPlaying = true
-            view.canvas.runPlay(canvas.recordsForPlay)
+            view.canvas.runPlay(canvas.recordsForPlay(emptyRecord: view.canvas.emptyRecord))
+            if view.action.framesIsShown {
+                hideFramesView()
+            }
         case .pause:
             isPlaying = false
             view.canvas.stopPlay()
-        default:
-            break
         }
 
         updateUI()
@@ -116,10 +163,19 @@ final class LiveImagePresenter {
     private func updateUI() {
         view.canvas.instrument = view.draw.selectedInstrument
         view.canvas.color = view.draw.selectedColor
-        view.canvas.width = view.draw.selectedWidth
+        if view.draw.selectedInstrument == .erase { // Чтобы стирать было удобней, пока нет выбора ширины.
+            view.canvas.width = view.draw.selectedWidth * 2
+        } else {
+            view.canvas.width = view.draw.selectedWidth
+        }
 
         view.canvas.prevFrameRecord = canvas.prevFrame?.currentRecord
         view.canvas.currentRecord = canvas.currentFrame.currentRecord
+
+        if view.action.framesIsShown {
+            view.frames.recordOfFrames = canvas.anyRecords(emptyRecord: view.canvas.emptyRecord)
+            view.frames.selectedFrameIndex = canvas.currentFrameIndex
+        }
 
         view.draw.setEnable(!isPlaying)
 
@@ -144,7 +200,18 @@ final class LiveImagePresenter {
             availableActions.insert(.play)
         }
         availableActions.insert(.addFrame)
+        availableActions.insert(.toggleFrames)
 
         view.action.availableActions = availableActions
+    }
+
+    private func showFramesView() {
+        view.action.framesIsShown = true
+        view.frames.show()
+    }
+
+    private func hideFramesView() {
+        view.action.framesIsShown = false
+        view.frames.hide()
     }
 }

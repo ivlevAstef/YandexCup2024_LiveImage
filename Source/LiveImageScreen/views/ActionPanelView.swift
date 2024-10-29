@@ -21,6 +21,14 @@ final class ActionPanelView: UIView, LiveImageActionViewProtocol {
         }
     }
 
+    var framesIsShown: Bool = false {
+        didSet {
+            for button in actionButtons where button.action == .toggleFrames {
+                button.isSelected = framesIsShown
+            }
+        }
+    }
+
     private let leftContentView = UIView(frame: .zero)
     private let undoButton = ActionButton(action: .undo)
     private let redoButton = ActionButton(action: .redo)
@@ -28,7 +36,7 @@ final class ActionPanelView: UIView, LiveImageActionViewProtocol {
     private let centerContentView = UIView(frame: .zero)
     private let removeFrameButton = ActionButton(action: .removeFrame)
     private let addFrameButton = ActionButton(action: .addFrame)
-    private let showFramesButton = ActionButton(action: .showFrames)
+    private let toggleFramesButton = ActionButton(action: .toggleFrames)
 
     private let rightContentView = UIView(frame: .zero)
     private let pauseButton = ActionButton(action: .pause)
@@ -40,7 +48,7 @@ final class ActionPanelView: UIView, LiveImageActionViewProtocol {
             redoButton,
             removeFrameButton,
             addFrameButton,
-            showFramesButton,
+            toggleFramesButton,
             pauseButton,
             playButton
         ]
@@ -67,7 +75,7 @@ final class ActionPanelView: UIView, LiveImageActionViewProtocol {
 
         centerContentView.addCSubview(removeFrameButton)
         centerContentView.addCSubview(addFrameButton)
-        centerContentView.addCSubview(showFramesButton)
+        centerContentView.addCSubview(toggleFramesButton)
 
         rightContentView.addCSubview(pauseButton)
         rightContentView.addCSubview(playButton)
@@ -114,9 +122,9 @@ final class ActionPanelView: UIView, LiveImageActionViewProtocol {
             addFrameButton.centerYAnchor.constraint(equalTo: centerContentView.centerYAnchor),
             addFrameButton.centerXAnchor.constraint(equalTo: centerContentView.centerXAnchor),
 
-            showFramesButton.leftAnchor.constraint(equalTo: addFrameButton.rightAnchor, constant: 2 * space),
-            showFramesButton.centerYAnchor.constraint(equalTo: centerContentView.centerYAnchor),
-            showFramesButton.rightAnchor.constraint(lessThanOrEqualTo: centerContentView.rightAnchor),
+            toggleFramesButton.leftAnchor.constraint(equalTo: addFrameButton.rightAnchor, constant: 2 * space),
+            toggleFramesButton.centerYAnchor.constraint(equalTo: centerContentView.centerYAnchor),
+            toggleFramesButton.rightAnchor.constraint(lessThanOrEqualTo: centerContentView.rightAnchor),
 
             // Right Content
             pauseButton.leftAnchor.constraint(equalTo: rightContentView.leftAnchor),
@@ -145,7 +153,7 @@ extension LiveImageAction {
         case .redo: return UIImage(named: "redo")
         case .removeFrame: return UIImage(named: "remove_frame")
         case .addFrame: return UIImage(named: "plus_frame")
-        case .showFrames: return UIImage(named: "frames")
+        case .toggleFrames: return UIImage(named: "frames")
         case .pause: return UIImage(named: "pause")
         case .play: return UIImage(named: "play")
         }

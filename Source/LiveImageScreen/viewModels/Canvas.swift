@@ -65,7 +65,7 @@ struct Canvas {
     }
 
     private var frames: [Frame] = [Frame()]
-    private var currentFrameIndex: Int = 0
+    private(set) var currentFrameIndex: Int = 0
 
     mutating func addFrame() {
         frames.append(Frame())
@@ -80,14 +80,42 @@ struct Canvas {
         }
     }
 
+    mutating func removeFrame(in index: Int) {
+        // Нельзя удалить единственный фрейм
+        if frames.indices.contains(index) && frames.count > 1 {
+            frames.remove(at: index)
+            if currentFrameIndex >= index {
+                currentFrameIndex -= 1
+                currentFrameIndex = max(0, currentFrameIndex)
+            }
+        }
+    }
+
+    mutating func dublicateFrame(from index: Int) {
+        if frames.indices.contains(index) {
+            frames.append(frames[index])
+            currentFrameIndex = frames.count - 1
+        }
+    }
+
+    mutating func changeFrameIndex(_ index: Int) {
+        if frames.indices.contains(index) {
+            currentFrameIndex = index
+        }
+    }
+
     mutating func cleanFrame() {
         currentFrame.clean()
     }
 }
 
 extension Canvas {
-    var recordsForPlay: [Canvas.Record] {
+    func recordsForPlay(emptyRecord: Canvas.Record) -> [Canvas.Record] {
         let frames = frames.suffix(from: currentFrameIndex) + frames.prefix(currentFrameIndex)
-        return frames.compactMap { $0.currentRecord }
+        return frames.map { $0.currentRecord ?? emptyRecord }
+    }
+
+    func anyRecords(emptyRecord: Canvas.Record) -> [Canvas.Record] {
+        return frames.map { $0.currentRecord ?? emptyRecord }
     }
 }
