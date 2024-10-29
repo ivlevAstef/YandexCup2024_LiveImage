@@ -11,6 +11,8 @@ typealias LiveImageActionSelectHandler = (_ action: LiveImageAction) -> Void
 typealias LiveImageInstrumentSelectHandler = (_ instrument: DrawInstrument) -> Void
 typealias LiveImageColorSelectHandler = (_ color: DrawColor) -> Void
 
+typealias LiveImageFigureMakedHandler = (CanvasFigure) -> Void
+
 protocol LiveImageActionViewProtocol: AnyObject {
     var selectActionHandler: LiveImageActionSelectHandler? { get set }
     var availableActions: Set<LiveImageAction> { get set }
@@ -24,9 +26,18 @@ protocol LiveImageDrawViewProtocol: AnyObject {
     var selectedColor: DrawColor? { get set }
 }
 
+protocol LiveImageCanvasViewProtocol: AnyObject {
+    var figureMakedHandler: LiveImageFigureMakedHandler? { get set }
+
+    var instrument: DrawInstrument { get set }
+    var width: CGFloat { get set }
+    var color: DrawColor { get set }
+}
+
 protocol LiveImageViewProtocol: AnyObject {
-    var actionView: LiveImageActionViewProtocol { get }
-    var drawView: LiveImageDrawViewProtocol { get }
+    var action: LiveImageActionViewProtocol { get }
+    var canvas: LiveImageCanvasViewProtocol { get }
+    var draw: LiveImageDrawViewProtocol { get }
 }
 
 final class LiveImagePresenter {
@@ -35,22 +46,24 @@ final class LiveImagePresenter {
     init(view: LiveImageViewProtocol) {
         self.view = view
 
-        view.actionView.selectActionHandler = { [weak self] action in
+        view.action.selectActionHandler = { [weak self] action in
             log.info("Tap on action: \(action)")
         }
-        view.actionView.availableActions = [.removeFrame, .addFrame, .showFrames, .play]
+        view.action.availableActions = [.removeFrame, .addFrame, .showFrames, .play]
 
-        view.drawView.selectedInstrument = .pencil
-        view.drawView.selectedColor = .blue
+        view.draw.selectedInstrument = .pencil
+        view.draw.selectedColor = .blue
 
-        view.drawView.selectInstrumentHandler = { [weak self] instrument in
+        view.draw.selectInstrumentHandler = { [weak self] instrument in
             log.info("Tap on instument: \(instrument)")
-            self?.view.drawView.selectedInstrument = instrument
+            self?.view.draw.selectedInstrument = instrument
+            self?.view.canvas.instrument = instrument
         }
 
-        view.drawView.selectColorHandler = { [weak self] color in
+        view.draw.selectColorHandler = { [weak self] color in
             log.info("Tap on color: \(color)")
-            self?.view.drawView.selectedColor = color
+            self?.view.draw.selectedColor = color
+            self?.view.canvas.color = color
         }
     }
 }

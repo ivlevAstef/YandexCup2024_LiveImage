@@ -27,6 +27,8 @@
 		AB0316972CCFFB620064DD7A /* UIView+addCSubview.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316962CCFFB620064DD7A /* UIView+addCSubview.swift */; };
 		AB03169A2CCFFCCC0064DD7A /* SelectedColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316992CCFFCCC0064DD7A /* SelectedColorView.swift */; };
 		AB03169C2CCFFCDF0064DD7A /* InstrumentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03169B2CCFFCDF0064DD7A /* InstrumentsView.swift */; };
+		AB03169E2CD0951E0064DD7A /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03169D2CD0951E0064DD7A /* CanvasView.swift */; };
+		AB0316A02CD097A10064DD7A /* Canvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03169F2CD097A10064DD7A /* Canvas.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +55,8 @@
 		AB0316962CCFFB620064DD7A /* UIView+addCSubview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+addCSubview.swift"; sourceTree = "<group>"; };
 		AB0316992CCFFCCC0064DD7A /* SelectedColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedColorView.swift; sourceTree = "<group>"; };
 		AB03169B2CCFFCDF0064DD7A /* InstrumentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentsView.swift; sourceTree = "<group>"; };
+		AB03169D2CD0951E0064DD7A /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
+		AB03169F2CD097A10064DD7A /* Canvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Canvas.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +147,7 @@
 				AB0316682CCF93660064DD7A /* LiveImageViewController.swift */,
 				AB03167B2CCF98930064DD7A /* LiveImageView.swift */,
 				AB0316892CCFCA940064DD7A /* ActionPanelView.swift */,
+				AB03169D2CD0951E0064DD7A /* CanvasView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -153,6 +158,7 @@
 				AB03168C2CCFD0050064DD7A /* LiveImageAction.swift */,
 				AB0316902CCFF4590064DD7A /* DrawInstrument.swift */,
 				AB0316922CCFF4F50064DD7A /* DrawColor.swift */,
+				AB03169F2CD097A10064DD7A /* Canvas.swift */,
 			);
 			path = viewModels;
 			sourceTree = "<group>";
@@ -237,8 +243,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB03169E2CD0951E0064DD7A /* CanvasView.swift in Sources */,
 				AB0316822CCF993C0064DD7A /* UIColor+Hex.swift in Sources */,
 				AB03168F2CCFF3DB0064DD7A /* DrawPanelView.swift in Sources */,
+				AB0316A02CD097A10064DD7A /* Canvas.swift in Sources */,
 				AB03167C2CCF98930064DD7A /* LiveImageView.swift in Sources */,
 				AB03167F2CCF98CC0064DD7A /* Colors.swift in Sources */,
 				AB03168A2CCFCA940064DD7A /* ActionPanelView.swift in Sources */,

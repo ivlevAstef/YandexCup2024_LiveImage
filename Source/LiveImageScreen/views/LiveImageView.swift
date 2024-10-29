@@ -9,10 +9,12 @@ import Foundation
 import UIKit
 
 final class LiveImageView: UIView, LiveImageViewProtocol {
-    var actionView: LiveImageActionViewProtocol { actionPanel }
-    var drawView: LiveImageDrawViewProtocol { drawPanel }
+    var action: LiveImageActionViewProtocol { actionPanel }
+    var canvas: LiveImageCanvasViewProtocol { canvasView }
+    var draw: LiveImageDrawViewProtocol { drawPanel }
 
     private let actionPanel = ActionPanelView()
+    private let canvasView = CanvasView()
     private let drawPanel = DrawPanelView()
 
     init() {
@@ -30,6 +32,7 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
         backgroundColor = Colors.backgroundColor
 
         addCSubview(actionPanel)
+        addCSubview(canvasView)
         addCSubview(drawPanel)
 
         makeConstraints()
@@ -43,6 +46,11 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
             actionPanel.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
             actionPanel.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
             actionPanel.heightAnchor.constraint(equalToConstant: 32.0),
+
+            canvasView.topAnchor.constraint(equalTo: actionPanel.bottomAnchor, constant: 32.0),
+            canvasView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
+            canvasView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
+            canvasView.bottomAnchor.constraint(equalTo: drawPanel.topAnchor, constant: -22.0),
 
             drawPanel.leftAnchor.constraint(greaterThanOrEqualTo: safeAreaLayoutGuide.leftAnchor),
             drawPanel.rightAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.rightAnchor),
