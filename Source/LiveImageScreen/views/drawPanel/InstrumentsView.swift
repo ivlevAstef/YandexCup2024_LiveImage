@@ -13,7 +13,7 @@ final class InstrumentsView: UIView {
             moreInstrumentsView.selectInstrumentHandler = selectInstrumentHandler
         }
     }
-    var selectedInstrument: DrawInstrument? = nil {
+    var selectedInstrument: DrawInstrument = .pencil {
         didSet {
             moreInstrumentsView.selectedInstrument = selectedInstrument
 
@@ -92,7 +92,7 @@ final class InstrumentsView: UIView {
 // TODO: пока не актуально, потом реализовать по возможности.
 private final class MoreInstrumentsView: UIView {
     var selectInstrumentHandler: LiveImageInstrumentSelectHandler?
-    var selectedInstrument: DrawInstrument? = nil {
+    var selectedInstrument: DrawInstrument = .pencil {
         didSet {
             for button in instrumentsButton {
                 button.isSelected = button.instrument == selectedInstrument

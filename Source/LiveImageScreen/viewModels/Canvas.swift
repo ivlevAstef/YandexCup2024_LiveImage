@@ -7,24 +7,49 @@
 
 import UIKit
 
+private enum Consts {
+    /// Максимальная глубина хранения истории изменений изображений.
+    static let maxRecordCapacity = 10
+}
+
 struct Canvas {
+    typealias Record = UIImage
+
     final class Frame {
-        var prevFrame: Frame? = nil
-        var nextFrame: Frame? = nil
-        var figures: [CanvasFigure] = []
+        var currentRecord: Record? { records.indices.contains(currentRecordIndex) ? records[currentRecordIndex] : nil }
+        var canUndo: Bool { currentRecordIndex >= 0 }
+        var canRedo: Bool { currentRecordIndex < records.count - 1 }
+
+        private var records: [Record] = []
+        private var currentRecordIndex: Int = -1
+
+        func addRecord(_ record: Record) {
+            // Если мы делали undo, а потом добавили новый фрейм, то все redo шаги мы трём.
+            records = Array(records.prefix(currentRecordIndex + 1))
+            records.append(record)
+            records = Array(records.suffix(Consts.maxRecordCapacity))
+            currentRecordIndex = records.count - 1
+        }
+
+        func undo() {
+            if canUndo {
+                currentRecordIndex -= 1
+            }
+        }
+
+        func redo() {
+            if canRedo {
+                currentRecordIndex += 1
+            }
+        }
+
+        init() {}
     }
 
-    var frames: [Frame] = []
-    var currentFrameIndex: Int = 0
-}
+    var currentFrame: Frame {
+        return frames[currentFrameIndex]
+    }
 
-enum CanvasFigure {
-    case path(CanvasFigurePath)
-    case image(UIImage)
-}
-
-struct CanvasFigurePath {
-    let points: [CGPoint]
-    let weight: CGFloat
-    let color: DrawColor
+    private var frames: [Frame] = [Frame()]
+    private var currentFrameIndex: Int = 0
 }

@@ -16,7 +16,7 @@ final class SelectedColorView: UIView {
         get { colorPaletteView.selectColorHandler }
         set { colorPaletteView.selectColorHandler = newValue }
     }
-    var selectedColor: DrawColor? {
+    var selectedColor: DrawColor = .black {
         didSet {
             backgroundColor = selectedColor
             if paletteIsShown {
@@ -72,10 +72,10 @@ final class SelectedColorView: UIView {
             layer.borderColor = Colors.selectColor.cgColor
         } else {
             // Если цвет по яркости, близок к цвету фона, то добавляем рамку, чтобы его было лучше видно.
-            if let selectedColor, abs(selectedColor.brightness - Colors.backgroundColor.brightness) < 0.1 {
+            if abs(selectedColor.brightness - Colors.backgroundColor.brightness) < 0.1 {
                 layer.borderColor = Colors.textColor.cgColor
             } else {
-                layer.borderColor = selectedColor?.cgColor
+                layer.borderColor = selectedColor.cgColor
             }
         }
     }

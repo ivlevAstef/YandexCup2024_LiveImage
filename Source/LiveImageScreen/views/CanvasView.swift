@@ -12,7 +12,7 @@ private enum Consts {
 }
 
 final class CanvasView: UIView, LiveImageCanvasViewProtocol {
-    var figureMakedHandler: LiveImageFigureMakedHandler? = nil
+    var recordMakedHandler: LiveImageRecordMakedHandler? = nil
 
     var instrument: DrawInstrument = .pencil {
         didSet { updateDrawLayerStyle() }
@@ -24,11 +24,18 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         didSet { updateDrawLayerStyle() }
     }
 
-    private var pathPositions: [CGPoint] = []
+    var currentRecord: Canvas.Record? {
+        didSet { 
+            currentRecordView.image = currentRecord
+        }
+    }
 
+    private var pathPositions: [CGPoint] = []
     private let drawLayer = CAShapeLayer()
 
     private let backgroundImageView = UIImageView(image: Consts.backgroundImage)
+    private let drawView = UIView(frame: .zero)
+    private let currentRecordView = UIImageView(image: nil)
 
     init() {
         super.init(frame: .zero)
@@ -46,7 +53,7 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
             return
         }
         pathPositions = [newTouchPoint]
-        layer.setNeedsDisplay()
+        updateDrawLayer()
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -55,65 +62,31 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         }
 
         pathPositions.append(newTouchPoint)
-        layer.setNeedsDisplay()
+        updateDrawLayer()
     }
 
-    override func draw(_ layer: CALayer, in ctx: CGContext) {
-        let linePath = UIBezierPath()
-        let smoothPoints = pathPositions.smooth
-
-        if let firstPoint = smoothPoints.first {
-            linePath.move(to: firstPoint)
-
-            for point in smoothPoints.dropFirst() {
-                linePath.addLine(to: point)
-            }
-        }
-
-        drawLayer.shadowPath = linePath.cgPath.copy(strokingWithWidth: width, lineCap: .round, lineJoin: .round, miterLimit: 0)
-        drawLayer.path = linePath.cgPath
-    }
-
-    private func updateDrawLayerStyle() {
-        switch instrument {
-        case .pencil:
-            drawLayer.shadowColor = nil
-            drawLayer.shadowRadius = 0
-            drawLayer.shadowOpacity = 0.0
-            drawLayer.lineWidth = width
-            drawLayer.lineCap = .square
-        case .brush:
-            drawLayer.shadowColor = color.cgColor
-            drawLayer.shadowRadius = width * 0.25
-            drawLayer.shadowOpacity = 1.0
-            drawLayer.shadowOffset = .zero
-            drawLayer.lineWidth = 0.0
-            drawLayer.lineCap = .round
-        case .erase:
-            drawLayer.shadowColor = nil
-            drawLayer.shadowRadius = 0
-            drawLayer.shadowOpacity = 0.0
-            drawLayer.lineWidth = width
-            drawLayer.lineCap = .round
-        }
-        drawLayer.opacity = 1.0
-        drawLayer.fillColor = UIColor.clear.cgColor
-        drawLayer.strokeColor = color.cgColor
-
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let newRecord = flattenToImage()
+        recordMakedHandler?(newRecord)
+        pathPositions.removeAll()
+        updateDrawLayer()
     }
 
     private func commonInit() {
         backgroundColor = Colors.backgroundColor
         addCSubview(backgroundImageView)
+        addCSubview(currentRecordView)
+        addCSubview(drawView)
 
+        isMultipleTouchEnabled = false
         layer.cornerRadius = 20.0
         layer.cornerCurve = .continuous
         clipsToBounds = true
 
         backgroundImageView.contentMode = .scaleAspectFill
 
-        drawLayer.contentsScale = layer.contentsScale
-        layer.addSublayer(drawLayer)
+        drawLayer.contentsScale = drawView.layer.contentsScale
+        drawView.layer.addSublayer(drawLayer)
         updateDrawLayerStyle()
 
         makeConstraints()
@@ -126,6 +99,104 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
             backgroundImageView.rightAnchor.constraint(equalTo: rightAnchor),
             backgroundImageView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+        NSLayoutConstraint.activate([
+            currentRecordView.topAnchor.constraint(equalTo: topAnchor),
+            currentRecordView.leftAnchor.constraint(equalTo: leftAnchor),
+            currentRecordView.rightAnchor.constraint(equalTo: rightAnchor),
+            currentRecordView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+        NSLayoutConstraint.activate([
+            drawView.topAnchor.constraint(equalTo: topAnchor),
+            drawView.leftAnchor.constraint(equalTo: leftAnchor),
+            drawView.rightAnchor.constraint(equalTo: rightAnchor),
+            drawView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+    }
+
+    // MARK: - Draw
+
+    private func makeLineDrawPath() -> UIBezierPath {
+        let linePath = UIBezierPath()
+        let smoothPoints = pathPositions.smooth
+
+        if let firstPoint = smoothPoints.first {
+            linePath.move(to: firstPoint)
+
+            for point in smoothPoints.dropFirst() {
+                linePath.addLine(to: point)
+            }
+        }
+
+        return linePath
+    }
+
+    private func updateDrawLayerStyle() {
+        switch instrument {
+        case .pencil:
+            drawLayer.shadowColor = nil
+            drawLayer.shadowRadius = 0
+            drawLayer.shadowOpacity = 0.0
+            drawLayer.lineWidth = width
+            drawLayer.lineCap = .square
+            drawLayer.strokeColor = color.cgColor
+        case .brush:
+            drawLayer.shadowColor = color.cgColor
+            drawLayer.shadowRadius = width * 0.25
+            drawLayer.shadowOpacity = 1.0
+            drawLayer.shadowOffset = .zero
+            drawLayer.lineWidth = 0.0
+            drawLayer.lineCap = .round
+            drawLayer.strokeColor = color.cgColor
+        case .erase:
+            // erase рисуем сразу в context, так-как нужен blendmode который на Layer не получить.
+            break
+        }
+        drawLayer.opacity = 1.0
+        drawLayer.fillColor = UIColor.clear.cgColor
+    }
+
+    private func updateDrawLayer() {
+        switch instrument {
+        case .pencil:
+            let linePath = makeLineDrawPath()
+            drawLayer.shadowPath = nil
+            drawLayer.path = linePath.cgPath
+        case .brush:
+            let linePath = makeLineDrawPath()
+            drawLayer.shadowPath = linePath.cgPath.copy(strokingWithWidth: width, lineCap: .round, lineJoin: .round, miterLimit: 0)
+            drawLayer.path = linePath.cgPath
+        case .erase:
+            currentRecordView.image = makeErasedImage()
+        }
+    }
+
+    private func flattenToImage() -> UIImage {
+        let renderer = UIGraphicsImageRenderer(bounds: bounds)
+        return renderer.image { rendererContext in
+            currentRecordView.draw(bounds)
+            drawView.drawHierarchy(in: bounds, afterScreenUpdates: false)
+        }
+    }
+
+    private func makeErasedImage() -> UIImage {
+        let renderer = UIGraphicsImageRenderer(bounds: bounds)
+        return renderer.image { rendererContext in
+            currentRecordView.image = currentRecord
+            currentRecordView.draw(bounds)
+            rendererContext.cgContext.setBlendMode(.clear)
+            rendererContext.cgContext.setLineCap(.butt)
+            rendererContext.cgContext.setAlpha(1.0)
+            rendererContext.cgContext.setLineWidth(width)
+
+            let smoothPoints = pathPositions.smooth
+            if let firstPoint = smoothPoints.first {
+                rendererContext.cgContext.move(to: firstPoint)
+                for point in smoothPoints.dropFirst() {
+                    rendererContext.cgContext.addLine(to: point)
+                }
+            }
+            rendererContext.cgContext.strokePath()
+        }
     }
 }
 
@@ -135,7 +206,7 @@ extension Array where Element == CGPoint {
             return self
         }
 
-        let granularity = 10
+        let granularity = 8
         let controlPoints = [self[0]] + self + [self[count - 1]]
         var result = [controlPoints[0]]
 
