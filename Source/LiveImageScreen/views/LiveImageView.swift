@@ -39,6 +39,7 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
 
         drawPanel.setSuperView(self)
     }
+    
 
     private func makeConstraints() {
         NSLayoutConstraint.activate([

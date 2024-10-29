@@ -46,6 +46,13 @@ final class InstrumentsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func setEnable(_ enabled: Bool) {
+        pencilButton.isEnabled = enabled
+        brushButton.isEnabled = enabled
+        eraseButton.isEnabled = enabled
+        moreButton.isEnabled = enabled
+    }
+
     func setParentView(_ view: UIView, superView: UIView) {
     }
 

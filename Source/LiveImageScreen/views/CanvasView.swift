@@ -9,6 +9,7 @@ import UIKit
 
 private enum Consts {
     static let backgroundImage = UIImage(named: "background_draw_area")
+    static let fps: Int = 12
 }
 
 final class CanvasView: UIView, LiveImageCanvasViewProtocol {
@@ -24,10 +25,12 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         didSet { updateDrawLayerStyle() }
     }
 
+    var prevFrameRecord: Canvas.Record? {
+        didSet { prevFrameRecordView.image = prevFrameRecord }
+    }
+
     var currentRecord: Canvas.Record? {
-        didSet { 
-            currentRecordView.image = currentRecord
-        }
+        didSet { currentRecordView.image = currentRecord }
     }
 
     private var pathPositions: [CGPoint] = []
@@ -35,7 +38,10 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
 
     private let backgroundImageView = UIImageView(image: Consts.backgroundImage)
     private let drawView = UIView(frame: .zero)
+    private let prevFrameRecordView = UIImageView(image: nil)
     private let currentRecordView = UIImageView(image: nil)
+
+    private var playRecordWorkItem: DispatchWorkItem?
 
     init() {
         super.init(frame: .zero)
@@ -43,9 +49,43 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         commonInit()
     }
 
+    deinit {
+        playRecordWorkItem?.cancel()
+    }
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func runPlay(_ records: [Canvas.Record]) {
+        if records.count < 2 {
+            log.assert("can't run play because no more records")
+            return
+        }
+
+        prevFrameRecordView.isHidden = true
+        isUserInteractionEnabled = false
+
+        var recordIndex = 0
+        let workItem = DispatchWorkItem(block: { [weak self] in
+            recordIndex = (recordIndex + 1) % records.count
+            if let self, let workItem = self.playRecordWorkItem {
+                currentRecordView.image = records[recordIndex]
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 / Double(Consts.fps), execute: workItem)
+            }
+        })
+        playRecordWorkItem = workItem
+        currentRecordView.image = records[recordIndex]
+        DispatchQueue.main.async(execute: workItem)
+    }
+
+    func stopPlay() {
+        prevFrameRecordView.isHidden = false
+        isUserInteractionEnabled = true
+
+        playRecordWorkItem?.cancel()
+        playRecordWorkItem = nil
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -75,6 +115,7 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     private func commonInit() {
         backgroundColor = Colors.backgroundColor
         addCSubview(backgroundImageView)
+        addCSubview(prevFrameRecordView)
         addCSubview(currentRecordView)
         addCSubview(drawView)
 
@@ -82,6 +123,8 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         layer.cornerRadius = 20.0
         layer.cornerCurve = .continuous
         clipsToBounds = true
+
+        prevFrameRecordView.alpha = 0.5
 
         backgroundImageView.contentMode = .scaleAspectFill
 
@@ -98,6 +141,12 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
             backgroundImageView.leftAnchor.constraint(equalTo: leftAnchor),
             backgroundImageView.rightAnchor.constraint(equalTo: rightAnchor),
             backgroundImageView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+        NSLayoutConstraint.activate([
+            prevFrameRecordView.topAnchor.constraint(equalTo: topAnchor),
+            prevFrameRecordView.leftAnchor.constraint(equalTo: leftAnchor),
+            prevFrameRecordView.rightAnchor.constraint(equalTo: rightAnchor),
+            prevFrameRecordView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
         NSLayoutConstraint.activate([
             currentRecordView.topAnchor.constraint(equalTo: topAnchor),

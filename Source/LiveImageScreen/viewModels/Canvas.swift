@@ -43,7 +43,21 @@ struct Canvas {
             }
         }
 
+        func clean() {
+            records = []
+            currentRecordIndex = -1
+        }
+
         init() {}
+    }
+
+    var haveMoreFrames: Bool { frames.count > 1 }
+
+    var prevFrame: Frame? {
+        if frames.indices.contains(currentFrameIndex - 1) {
+            return frames[currentFrameIndex - 1]
+        }
+        return nil
     }
 
     var currentFrame: Frame {
@@ -52,4 +66,28 @@ struct Canvas {
 
     private var frames: [Frame] = [Frame()]
     private var currentFrameIndex: Int = 0
+
+    mutating func addFrame() {
+        frames.append(Frame())
+        currentFrameIndex = frames.count - 1
+    }
+
+    mutating func removeFrame() {
+        // Нельзя удалить единственный фрейм
+        if frames.indices.contains(currentFrameIndex) && frames.count > 1 {
+            frames.remove(at: currentFrameIndex)
+            currentFrameIndex = min(currentFrameIndex, frames.count - 1)
+        }
+    }
+
+    mutating func cleanFrame() {
+        currentFrame.clean()
+    }
+}
+
+extension Canvas {
+    var recordsForPlay: [Canvas.Record] {
+        let frames = frames.suffix(from: currentFrameIndex) + frames.prefix(currentFrameIndex)
+        return frames.compactMap { $0.currentRecord }
+    }
 }

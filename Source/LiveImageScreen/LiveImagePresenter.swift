@@ -25,6 +25,8 @@ protocol LiveImageDrawViewProtocol: AnyObject {
     var selectedInstrument: DrawInstrument { get set }
     var selectedColor: DrawColor { get set }
     var selectedWidth: CGFloat { get set }
+
+    func setEnable(_ enable: Bool)
 }
 
 protocol LiveImageCanvasViewProtocol: AnyObject {
@@ -34,7 +36,11 @@ protocol LiveImageCanvasViewProtocol: AnyObject {
     var width: CGFloat { get set }
     var color: DrawColor { get set }
 
+    var prevFrameRecord: Canvas.Record? { get set }
     var currentRecord: Canvas.Record? { get set }
+
+    func runPlay(_ records: [Canvas.Record])
+    func stopPlay()
 }
 
 protocol LiveImageViewProtocol: AnyObject {
@@ -47,6 +53,8 @@ final class LiveImagePresenter {
     private let view: LiveImageViewProtocol
 
     private var canvas: Canvas = Canvas()
+
+    private var isPlaying: Bool = false
 
     init(view: LiveImageViewProtocol) {
         self.view = view
@@ -88,6 +96,16 @@ final class LiveImagePresenter {
             canvas.currentFrame.undo()
         case .redo:
             canvas.currentFrame.redo()
+        case .addFrame:
+            canvas.addFrame()
+        case .removeFrame:
+            canvas.removeFrame()
+        case .play:
+            isPlaying = true
+            view.canvas.runPlay(canvas.recordsForPlay)
+        case .pause:
+            isPlaying = false
+            view.canvas.stopPlay()
         default:
             break
         }
@@ -100,7 +118,19 @@ final class LiveImagePresenter {
         view.canvas.color = view.draw.selectedColor
         view.canvas.width = view.draw.selectedWidth
 
+        view.canvas.prevFrameRecord = canvas.prevFrame?.currentRecord
         view.canvas.currentRecord = canvas.currentFrame.currentRecord
+
+        view.draw.setEnable(!isPlaying)
+
+        updateAvailableActions()
+    }
+
+    private func updateAvailableActions() {
+        if isPlaying {
+            view.action.availableActions = [.pause]
+            return
+        }
 
         var availableActions: Set<LiveImageAction> = []
         if canvas.currentFrame.canUndo {
@@ -109,6 +139,12 @@ final class LiveImagePresenter {
         if canvas.currentFrame.canRedo {
             availableActions.insert(.redo)
         }
+        if canvas.haveMoreFrames {
+            availableActions.insert(.removeFrame)
+            availableActions.insert(.play)
+        }
+        availableActions.insert(.addFrame)
+
         view.action.availableActions = availableActions
     }
 }

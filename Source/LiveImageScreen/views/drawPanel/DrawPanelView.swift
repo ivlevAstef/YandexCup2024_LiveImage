@@ -48,6 +48,11 @@ final class DrawPanelView: UIView, LiveImageDrawViewProtocol {
         selectedColorView.setParentView(self, superView: superView)
     }
 
+    func setEnable(_ enable: Bool) {
+        isUserInteractionEnabled = enable
+        instrumentsView.setEnable(enable)
+    }
+
     private func commonInit() {
         addCSubview(instrumentsView)
         addCSubview(selectedColorView)
