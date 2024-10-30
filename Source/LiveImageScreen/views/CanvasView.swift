@@ -9,7 +9,7 @@ import UIKit
 
 private enum Consts {
     static let backgroundImage = UIImage(named: "background_draw_area")
-    static let fps: Int = 12
+    static let fps: Int = 24
 }
 
 final class CanvasView: UIView, LiveImageCanvasViewProtocol {
@@ -26,16 +26,26 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     }
 
     var prevFrameRecord: Canvas.Record? {
-        didSet { prevFrameRecordView.image = prevFrameRecord }
+        didSet {
+            prevFrameRecordView.image = prevFrameRecord?.toImage
+        }
     }
 
     var currentRecord: Canvas.Record? {
-        didSet { currentRecordView.image = currentRecord }
+        didSet {
+            currentImage = currentRecord?.toImage
+            currentRecordView.image = currentImage
+        }
     }
 
-    var emptyRecord: Canvas.Record { return emptyImage() }
+    var canvasSize: CanvasSize {
+        return CanvasSize(size: bounds.size, scale: contentScaleFactor)
+    }
+
+    var emptyRecord: Canvas.Record { return generateEmptyRecord() }
 
     private var pathPositions: [CGPoint] = []
+    private var currentImage: UIImage?
     private let drawLayer = CAShapeLayer()
 
     private let backgroundImageView = UIImageView(image: Consts.backgroundImage)
@@ -73,12 +83,12 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         let workItem = DispatchWorkItem(block: { [weak self] in
             recordIndex = (recordIndex + 1) % records.count
             if let self, let workItem = self.playRecordWorkItem {
-                currentRecordView.image = records[recordIndex]
+                self.currentRecordView.image = records[recordIndex].toImage
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 / Double(Consts.fps), execute: workItem)
             }
         })
         playRecordWorkItem = workItem
-        currentRecordView.image = records[recordIndex]
+        currentRecordView.image = records[recordIndex].toImage
         DispatchQueue.main.async(execute: workItem)
     }
 
@@ -108,7 +118,7 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let newRecord = flattenToImage()
+        let newRecord = flattenToRecord()
         recordMakedHandler?(newRecord)
         pathPositions.removeAll()
         updateDrawLayer()
@@ -221,23 +231,23 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         }
     }
 
-    private func flattenToImage() -> UIImage {
+    private func flattenToRecord() -> Canvas.Record {
         let renderer = UIGraphicsImageRenderer(bounds: bounds)
-        return renderer.image { rendererContext in
+        return renderer.pngData { rendererContext in
             currentRecordView.draw(bounds)
             drawView.drawHierarchy(in: bounds, afterScreenUpdates: false)
         }
     }
 
-    private func emptyImage() -> UIImage {
+    private func generateEmptyRecord() -> Canvas.Record {
         let renderer = UIGraphicsImageRenderer(bounds: bounds)
-        return renderer.image { _ in }
+        return renderer.pngData { _ in }
     }
 
     private func makeErasedImage() -> UIImage {
         let renderer = UIGraphicsImageRenderer(bounds: bounds)
         return renderer.image { rendererContext in
-            currentRecordView.image = currentRecord
+            currentRecordView.image = currentImage
             currentRecordView.draw(bounds)
             rendererContext.cgContext.setBlendMode(.clear)
             rendererContext.cgContext.setLineCap(.butt)

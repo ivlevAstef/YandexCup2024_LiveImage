@@ -13,6 +13,8 @@ final class LiveImageViewController: UIViewController, LiveImageGeneratorViewPro
 
     var retainScreenObjects: [AnyObject] = []
 
+    private var progressAlertController: UIAlertController?
+
     override func loadView() {
         view = liveImageView
     }
@@ -54,6 +56,31 @@ final class LiveImageViewController: UIViewController, LiveImageGeneratorViewPro
         alertController.addAction(cancelAction)
 
         present(alertController, animated: true)
+    }
+
+    func showProgress() {
+        view.isUserInteractionEnabled = false
+
+        let alertController = UIAlertController(title: "Generating...", message: nil, preferredStyle: .alert)
+        progressAlertController = alertController
+
+        let indicatorView = UIActivityIndicatorView(frame: alertController.view.bounds)
+        alertController.view.addCSubview(indicatorView)
+        indicatorView.isUserInteractionEnabled = false
+        NSLayoutConstraint.activate([
+            indicatorView.centerYAnchor.constraint(equalTo: alertController.view.centerYAnchor),
+            indicatorView.centerXAnchor.constraint(equalTo: alertController.view.centerXAnchor, constant: 75.0)
+        ])
+        indicatorView.startAnimating()
+
+        present(alertController, animated: true)
+    }
+
+    func endProgress() {
+        view.isUserInteractionEnabled = true
+
+        progressAlertController?.dismiss(animated: true)
+        progressAlertController = nil
     }
 }
 

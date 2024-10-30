@@ -45,7 +45,7 @@ final class RecordFrameCell: UICollectionViewCell {
         setIsCurrent(false)
     }
 
-    func setImage(_ image: UIImage) {
+    func setImage(_ image: UIImage?) {
         imageView.image = image
     }
 

@@ -9,13 +9,16 @@ import UIKit
 
 private enum Consts {
     /// Максимальная глубина хранения истории изменений изображений.
-    static let maxRecordCapacity = 16
+    static let maxRecordCapacity = 32
     /// Максимальная глубина хранения истории изменений изображений, для неактивных кадров.
     static let maxCleanedRecordCapacity = 2
 }
 
 struct Canvas {
-    typealias Record = UIImage
+    /// PNG. Вообще изначально было UIImage. Но оно просто подыхала если генерировать по 1000 кадров.
+    /// C PNG без проблем 10000 кадров выдерживает, в адекватные сроки генерации.
+    /// И в целом даже смог 100000 кадров сгенерировать, но ждать пришлось долго, что в целом не удивительно - это 55минут видео при 30 кадрах в секунду.
+    typealias Record = Data
 
     final class Frame {
         var currentRecord: Record? { records.indices.contains(currentRecordIndex) ? records[currentRecordIndex] : nil }
@@ -164,5 +167,15 @@ extension Canvas {
 
     func anyRecords(emptyRecord: Canvas.Record) -> [Canvas.Record] {
         return frames.map { $0.currentRecord ?? emptyRecord }
+    }
+}
+
+extension Canvas.Record {
+    var toImage: UIImage? {
+        if let image = UIImage(data: self) {
+            return image
+        }
+        log.assert("fail make image by record data")
+        return nil
     }
 }

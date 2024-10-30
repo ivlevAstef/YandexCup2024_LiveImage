@@ -49,6 +49,7 @@ protocol LiveImageCanvasViewProtocol: AnyObject {
     var prevFrameRecord: Canvas.Record? { get set }
     var currentRecord: Canvas.Record? { get set }
 
+    var canvasSize: CanvasSize { get }
     var emptyRecord: Canvas.Record { get }
 
     func runPlay(_ records: [Canvas.Record])
@@ -62,8 +63,9 @@ protocol LiveImageFramesViewProtocol: AnyObject {
     var addFrameHandler: LiveImageAddFrameHandler? { get set }
     var generateFramesHandler: LiveImageGenerateFramesHandler? { get set }
 
-    var recordOfFrames: [Canvas.Record] { get set }
     var selectedFrameIndex: Int { get set }
+
+    func update(recordOfFrames: [Canvas.Record], canvasSize: CanvasSize)
 
     func show()
     func hide()
@@ -143,8 +145,8 @@ final class LiveImagePresenter {
         view.frames.generateFramesHandler = { [weak self] in
             log.info("generate frames")
             if let self {
-                self.generatorPresenter.generate(use: self.view.canvas.emptyRecord, success: { [weak self] records in
-                    log.info("generate \(records.count) frames succeess")
+                self.generatorPresenter.generate(canvasSize: self.view.canvas.canvasSize, success: { [weak self] records in
+                    log.info("generate \(records.count) frames success")
                     self?.canvas.addFrames(by: records)
                     self?.updateUI()
                 })
@@ -196,8 +198,8 @@ final class LiveImagePresenter {
         view.canvas.currentRecord = canvas.currentFrame.currentRecord
 
         if view.action.framesIsShown {
-            view.frames.recordOfFrames = canvas.anyRecords(emptyRecord: view.canvas.emptyRecord)
-            view.frames.selectedFrameIndex = canvas.currentFrameIndex
+            view.frames.update(recordOfFrames: canvas.anyRecords(emptyRecord: view.canvas.emptyRecord),
+                               canvasSize: view.canvas.canvasSize)
         }
 
         view.draw.setEnable(!isPlaying)

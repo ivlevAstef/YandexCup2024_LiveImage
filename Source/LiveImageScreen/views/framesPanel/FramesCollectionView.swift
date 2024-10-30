@@ -20,10 +20,6 @@ final class FramesCollectionView: UICollectionView, UICollectionViewDelegate, UI
     var addFrameHandler: LiveImageAddFrameHandler?
     var generateFramesHandler: LiveImageGenerateFramesHandler?
 
-    var recordOfFrames: [Canvas.Record] = [] {
-        didSet { reloadData() }
-    }
-
     var selectedFrameIndex: Int = 0 {
         didSet {
             if selectedFrameIndex == oldValue {
@@ -41,6 +37,9 @@ final class FramesCollectionView: UICollectionView, UICollectionViewDelegate, UI
             }
         }
     }
+
+    private var canvasSize: CanvasSize?
+    private var recordOfFrames: [Canvas.Record] = []
 
     init() {
         let layout = UICollectionViewFlowLayout()
@@ -62,26 +61,28 @@ final class FramesCollectionView: UICollectionView, UICollectionViewDelegate, UI
         fatalError("init(coder:) has not been implemented")
     }
 
+    func update(recordOfFrames: [Canvas.Record], canvasSize: CanvasSize) {
+        self.canvasSize = canvasSize
+        self.recordOfFrames = recordOfFrames
+        reloadData()
+    }
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // В рабочем состоянии у нас есть всегда хотябы один кадр. Но при инициализации, может быть ноль - чтобы потом не упасть, есть эта проверка.
-        if recordOfFrames.count == 0 {
+        if canvasSize == nil {
             return 0
-        } else {
-            // Две ячейки после фреймов - одна добавить, другая сгенерировать.
-            return recordOfFrames.count + 2
         }
+        // Две ячейки после фреймов - одна добавить, другая сгенерировать.
+        return recordOfFrames.count + 2
     }
 
     func collectionView(_ collectionView: UICollectionView, 
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if recordOfFrames.count == 0 {
-            log.assert("records of frames can't be zero")
+        guard let canvasSize else {
             return .zero
         }
-        let imageSize = recordOfFrames[min(indexPath.row, recordOfFrames.count - 1)].size
 
-        let width = FramesConsts.imageHeight * imageSize.width / imageSize.height
+        let width = FramesConsts.imageHeight * canvasSize.width / canvasSize.height
 
         return CGSize(width: width + 2 * FramesConsts.itemSpacing, height: FramesConsts.itemHeight)
     }
@@ -99,7 +100,8 @@ final class FramesCollectionView: UICollectionView, UICollectionViewDelegate, UI
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let frameCell = cell as? RecordFrameCell {
             let record = recordOfFrames[indexPath.row]
-            frameCell.setImage(record)
+
+            frameCell.setImage(record.toImage)
             frameCell.setIsCurrent(selectedFrameIndex == indexPath.row)
             frameCell.canDelete = recordOfFrames.count > 1
 

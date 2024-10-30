@@ -36,10 +36,6 @@ final class LiveImageFramesPanelView: UIView, LiveImageFramesViewProtocol {
         set { framesView.generateFramesHandler = newValue }
     }
 
-    var recordOfFrames: [Canvas.Record] {
-        get { framesView.recordOfFrames }
-        set { framesView.recordOfFrames = newValue }
-    }
     var selectedFrameIndex: Int {
         get { framesView.selectedFrameIndex }
         set { framesView.selectedFrameIndex = newValue }
@@ -58,6 +54,10 @@ final class LiveImageFramesPanelView: UIView, LiveImageFramesViewProtocol {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func update(recordOfFrames: [Canvas.Record], canvasSize: CanvasSize) {
+        framesView.update(recordOfFrames: recordOfFrames, canvasSize: canvasSize)
     }
 
     func show() {
