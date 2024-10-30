@@ -10,7 +10,9 @@ enum LiveImageAction: Hashable {
     case redo
 
     case removeFrame
+    case removeAllFrames
     case addFrame
+    case generateFrames
     case toggleFrames
 
     case pause

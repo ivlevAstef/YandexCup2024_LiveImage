@@ -9,7 +9,7 @@ import UIKit
 
 private enum Consts {
     static let backgroundImage = UIImage(named: "background_draw_area")
-    static let fps: Int = 24
+    static let defaultFPS: Int = 60
 }
 
 final class CanvasView: UIView, LiveImageCanvasViewProtocol {
@@ -24,6 +24,8 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     var color: DrawColor = .black {
         didSet { updateDrawLayerStyle() }
     }
+
+    var fps: Int = Consts.defaultFPS
 
     var prevFrameRecord: Canvas.Record? {
         didSet {
@@ -53,7 +55,7 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     private let prevFrameRecordView = UIImageView(image: nil)
     private let currentRecordView = UIImageView(image: nil)
 
-    private var playRecordWorkItem: DispatchWorkItem?
+    private var playTimer: Timer?
 
     init() {
         super.init(frame: .zero)
@@ -62,7 +64,7 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     }
 
     deinit {
-        playRecordWorkItem?.cancel()
+        playTimer?.invalidate()
     }
 
     @available(*, unavailable)
@@ -76,28 +78,29 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
             return
         }
 
+        playTimer?.invalidate()
+        playTimer = nil
+
         prevFrameRecordView.isHidden = true
         isUserInteractionEnabled = false
 
         var recordIndex = 0
-        let workItem = DispatchWorkItem(block: { [weak self] in
+        currentRecordView.image = records[recordIndex].toImage
+
+        playTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / Double(fps), repeats: true, block: { [weak self] _ in
             recordIndex = (recordIndex + 1) % records.count
-            if let self, let workItem = self.playRecordWorkItem {
+            if let self {
                 self.currentRecordView.image = records[recordIndex].toImage
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 / Double(Consts.fps), execute: workItem)
             }
         })
-        playRecordWorkItem = workItem
-        currentRecordView.image = records[recordIndex].toImage
-        DispatchQueue.main.async(execute: workItem)
     }
 
     func stopPlay() {
         prevFrameRecordView.isHidden = false
         isUserInteractionEnabled = true
 
-        playRecordWorkItem?.cancel()
-        playRecordWorkItem = nil
+        playTimer?.invalidate()
+        playTimer = nil
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

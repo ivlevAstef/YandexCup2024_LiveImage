@@ -8,6 +8,7 @@
 import Foundation
 
 typealias LiveImageActionSelectHandler = (_ action: LiveImageAction) -> Void
+typealias LiveImagePlayWithSpeedHandler = (_ speed: PlaySpeed) -> Void
 typealias LiveImageInstrumentSelectHandler = (_ instrument: DrawInstrument) -> Void
 typealias LiveImageColorSelectHandler = (_ color: DrawColor) -> Void
 
@@ -21,8 +22,9 @@ typealias LiveImageGenerateFramesHandler = () -> Void
 
 protocol LiveImageActionViewProtocol: AnyObject {
     var selectActionHandler: LiveImageActionSelectHandler? { get set }
-    var availableActions: Set<LiveImageAction> { get set }
+    var playWithSpeedHandler: LiveImagePlayWithSpeedHandler? { get set }
 
+    var availableActions: Set<LiveImageAction> { get set }
     var framesIsShown: Bool { get set }
 }
 
@@ -45,6 +47,7 @@ protocol LiveImageCanvasViewProtocol: AnyObject {
     var instrument: DrawInstrument { get set }
     var width: CGFloat { get set }
     var color: DrawColor { get set }
+    var fps: Int { get set }
 
     var prevFrameRecord: Canvas.Record? { get set }
     var currentRecord: Canvas.Record? { get set }
@@ -104,6 +107,10 @@ final class LiveImagePresenter {
             log.info("Tap on action: \(action)")
             self?.processAction(action)
         }
+        view.action.playWithSpeedHandler = { [weak self] speed in
+            self?.play(speed: speed)
+            self?.updateUI()
+        }
 
         view.draw.selectInstrumentHandler = { [weak self] instrument in
             log.info("Tap on instument: \(instrument)")
@@ -143,15 +150,7 @@ final class LiveImagePresenter {
             self?.updateUI()
         }
         view.frames.generateFramesHandler = { [weak self] in
-            log.info("generate frames")
-            if let self {
-                self.generatorPresenter.generate(canvasSize: self.view.canvas.canvasSize, success: { [weak self] records in
-                    log.info("generate \(records.count) frames success")
-                    self?.canvas.addFrames(by: records)
-                    self?.updateUI()
-                })
-            }
-
+            self?.generateFrames()
         }
     }
 
@@ -163,8 +162,13 @@ final class LiveImagePresenter {
             canvas.currentFrame.redo()
         case .addFrame:
             canvas.addFrame()
+        case .generateFrames:
+            generateFrames()
+            return
         case .removeFrame:
             canvas.removeFrame()
+        case .removeAllFrames:
+            canvas = Canvas()
         case .toggleFrames:
             if view.action.framesIsShown {
                 hideFramesView()
@@ -172,14 +176,9 @@ final class LiveImagePresenter {
                 showFramesView()
             }
         case .play:
-            isPlaying = true
-            view.canvas.runPlay(canvas.recordsForPlay(emptyRecord: view.canvas.emptyRecord))
-            if view.action.framesIsShown {
-                hideFramesView()
-            }
+            play(speed: .normal)
         case .pause:
-            isPlaying = false
-            view.canvas.stopPlay()
+            stop()
         }
 
         updateUI()
@@ -222,9 +221,11 @@ final class LiveImagePresenter {
         }
         if canvas.haveMoreFrames {
             availableActions.insert(.removeFrame)
+            availableActions.insert(.removeAllFrames)
             availableActions.insert(.play)
         }
         availableActions.insert(.addFrame)
+        availableActions.insert(.generateFrames)
         availableActions.insert(.toggleFrames)
 
         view.action.availableActions = availableActions
@@ -239,5 +240,36 @@ final class LiveImagePresenter {
     private func hideFramesView() {
         view.action.framesIsShown = false
         view.frames.hide()
+    }
+
+    private func play(speed: PlaySpeed) {
+        if isPlaying {
+            return
+        }
+
+        isPlaying = true
+        view.canvas.fps = speed.fps
+        view.canvas.runPlay(canvas.recordsForPlay(emptyRecord: view.canvas.emptyRecord))
+        if view.action.framesIsShown {
+            hideFramesView()
+        }
+    }
+
+    private func stop() {
+        if !isPlaying {
+            return
+        }
+        
+        isPlaying = false
+        view.canvas.stopPlay()
+    }
+
+    private func generateFrames() {
+        log.info("generate frames")
+        generatorPresenter.generate(canvasSize: view.canvas.canvasSize, success: { [weak self] records in
+            log.info("generate \(records.count) frames success")
+            self?.canvas.addFrames(by: records)
+            self?.updateUI()
+        })
     }
 }

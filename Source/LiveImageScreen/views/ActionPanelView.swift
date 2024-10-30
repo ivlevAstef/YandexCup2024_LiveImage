@@ -12,6 +12,7 @@ import UIKit
 /// Решил не делать с помощью navigationBar - в случае если найду время, больше возможностей для кастомизации.
 final class ActionPanelView: UIView, LiveImageActionViewProtocol {
     var selectActionHandler: LiveImageActionSelectHandler?
+    var playWithSpeedHandler: LiveImagePlayWithSpeedHandler?
 
     var availableActions: Set<LiveImageAction> = [] {
         didSet {
@@ -86,6 +87,30 @@ final class ActionPanelView: UIView, LiveImageActionViewProtocol {
             }, for: .touchUpInside)
         }
 
+        removeFrameButton.menu = UIMenu(children: [
+            UIAction(title: "Remove Frame", handler: { [weak self] _ in
+                self?.selectActionHandler?(.removeFrame)
+            }),
+            UIAction(title: "Remove All Frames", handler: { [weak self] _ in
+                self?.selectActionHandler?(.removeAllFrames)
+            }),
+        ])
+
+        addFrameButton.menu = UIMenu(children: [
+            UIAction(title: "Add Frame", handler: { [weak self] _ in
+                self?.selectActionHandler?(.addFrame)
+            }),
+            UIAction(title: "Generate Frames", handler: { [weak self] _ in
+                self?.selectActionHandler?(.generateFrames)
+            }),
+        ])
+
+        playButton.menu = UIMenu(children: PlaySpeed.allCases.map { speed in
+            UIAction(title: speed.name, handler: { [weak self] _ in
+                self?.playWithSpeedHandler?(speed)
+            })
+        })
+
         makeConstraints()
     }
 
@@ -152,7 +177,9 @@ extension LiveImageAction {
         case .undo: return UIImage(named: "undo")
         case .redo: return UIImage(named: "redo")
         case .removeFrame: return UIImage(named: "remove_frame")
+        case .removeAllFrames: return nil
         case .addFrame: return UIImage(named: "plus_frame")
+        case .generateFrames: return nil
         case .toggleFrames: return UIImage(named: "frames")
         case .pause: return UIImage(named: "pause")
         case .play: return UIImage(named: "play")
