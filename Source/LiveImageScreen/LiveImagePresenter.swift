@@ -16,6 +16,8 @@ typealias LiveImageRecordMakedHandler = (Canvas.Record) -> Void
 typealias LiveImageSelectedFrameChangedHandler = (Int) -> Void
 typealias LiveImageDeleteFrameHandler = (Int) -> Void
 typealias LiveImageDublicateFrameHandler = (Int) -> Void
+typealias LiveImageAddFrameHandler = () -> Void
+typealias LiveImageGenerateFramesHandler = () -> Void
 
 protocol LiveImageActionViewProtocol: AnyObject {
     var selectActionHandler: LiveImageActionSelectHandler? { get set }
@@ -57,6 +59,8 @@ protocol LiveImageFramesViewProtocol: AnyObject {
     var selectedFrameChangedHandler: LiveImageSelectedFrameChangedHandler? { get set }
     var deleteFrameHandler: LiveImageDeleteFrameHandler? { get set }
     var dublicateFrameHandler: LiveImageDublicateFrameHandler? { get set }
+    var addFrameHandler: LiveImageAddFrameHandler? { get set }
+    var generateFramesHandler: LiveImageGenerateFramesHandler? { get set }
 
     var recordOfFrames: [Canvas.Record] { get set }
     var selectedFrameIndex: Int { get set }
@@ -87,6 +91,11 @@ final class LiveImagePresenter {
         view.draw.selectedWidth = 5.0
         view.draw.selectedColor = .black
 
+        subscribe()
+        updateUI()
+    }
+
+    private func subscribe() {
         view.action.selectActionHandler = { [weak self] action in
             log.info("Tap on action: \(action)")
             self?.processAction(action)
@@ -104,32 +113,35 @@ final class LiveImagePresenter {
         }
 
         view.canvas.recordMakedHandler = { [weak self] record in
-            if let self {
-                self.canvas.currentFrame.addRecord(record)
-                self.updateUI()
-            }
+            log.info("Draw new record")
+            self?.canvas.currentFrame.addRecord(record)
+            self?.updateUI()
         }
 
         view.frames.selectedFrameChangedHandler = { [weak self] newIndex in
-            if let self {
-                self.canvas.changeFrameIndex(newIndex)
-                self.updateUI()
-            }
+            log.info("change current frame on \(newIndex)")
+            self?.canvas.changeFrameIndex(newIndex)
+            self?.updateUI()
         }
         view.frames.deleteFrameHandler = { [weak self] deleteIndex in
-            if let self {
-                self.canvas.removeFrame(in: deleteIndex)
-                self.updateUI()
-            }
+            log.info("delete frame on \(deleteIndex)")
+            self?.canvas.removeFrame(in: deleteIndex)
+            self?.updateUI()
         }
         view.frames.dublicateFrameHandler = { [weak self] dublicateIndex in
-            if let self {
-                self.canvas.dublicateFrame(from: dublicateIndex)
-                self.updateUI()
-            }
+            log.info("dublicate frame from \(dublicateIndex)")
+            self?.canvas.dublicateFrame(from: dublicateIndex)
+            self?.updateUI()
         }
-
-        updateUI()
+        view.frames.addFrameHandler = { [weak self] in
+            log.info("add frame")
+            self?.canvas.addFrame()
+            self?.updateUI()
+        }
+        view.frames.generateFramesHandler = { [weak self] in
+            log.info("generate frames")
+            // TODO: generate
+        }
     }
 
     private func processAction(_ action: LiveImageAction) {

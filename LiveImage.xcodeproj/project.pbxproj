@@ -30,7 +30,11 @@
 		AB03169E2CD0951E0064DD7A /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03169D2CD0951E0064DD7A /* CanvasView.swift */; };
 		AB0316A02CD097A10064DD7A /* Canvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB03169F2CD097A10064DD7A /* Canvas.swift */; };
 		AB0316A22CD11D9C0064DD7A /* LiveImageFramesPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316A12CD11D9C0064DD7A /* LiveImageFramesPanelView.swift */; };
+		ABAD64352CD1F8C400A6BB9E /* RecordFrameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAD64342CD1F8C400A6BB9E /* RecordFrameCell.swift */; };
+		ABAD64372CD1F90C00A6BB9E /* FramesCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAD64362CD1F90C00A6BB9E /* FramesCollectionView.swift */; };
 		ABBE1B962CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABBE1B952CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift */; };
+		ABEA0FBC2CD1FB6300454EEC /* AddFrameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEA0FBB2CD1FB6300454EEC /* AddFrameCell.swift */; };
+		ABEA0FBE2CD1FC9300454EEC /* GenerateFrameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEA0FBD2CD1FC9300454EEC /* GenerateFrameCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,7 +64,11 @@
 		AB03169D2CD0951E0064DD7A /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
 		AB03169F2CD097A10064DD7A /* Canvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Canvas.swift; sourceTree = "<group>"; };
 		AB0316A12CD11D9C0064DD7A /* LiveImageFramesPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageFramesPanelView.swift; sourceTree = "<group>"; };
+		ABAD64342CD1F8C400A6BB9E /* RecordFrameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordFrameCell.swift; sourceTree = "<group>"; };
+		ABAD64362CD1F90C00A6BB9E /* FramesCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FramesCollectionView.swift; sourceTree = "<group>"; };
 		ABBE1B952CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomIntensityVisualEffectView.swift; sourceTree = "<group>"; };
+		ABEA0FBB2CD1FB6300454EEC /* AddFrameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFrameCell.swift; sourceTree = "<group>"; };
+		ABEA0FBD2CD1FC9300454EEC /* GenerateFrameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateFrameCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,12 +156,12 @@
 		AB0316872CCFCA3B0064DD7A /* views */ = {
 			isa = PBXGroup;
 			children = (
+				ABAD64332CD1F8B400A6BB9E /* framesPanel */,
 				AB0316982CCFFCBC0064DD7A /* drawPanel */,
 				AB0316682CCF93660064DD7A /* LiveImageViewController.swift */,
 				AB03167B2CCF98930064DD7A /* LiveImageView.swift */,
 				AB0316892CCFCA940064DD7A /* ActionPanelView.swift */,
 				AB03169D2CD0951E0064DD7A /* CanvasView.swift */,
-				AB0316A12CD11D9C0064DD7A /* LiveImageFramesPanelView.swift */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -177,6 +185,18 @@
 				AB03169B2CCFFCDF0064DD7A /* InstrumentsView.swift */,
 			);
 			path = drawPanel;
+			sourceTree = "<group>";
+		};
+		ABAD64332CD1F8B400A6BB9E /* framesPanel */ = {
+			isa = PBXGroup;
+			children = (
+				AB0316A12CD11D9C0064DD7A /* LiveImageFramesPanelView.swift */,
+				ABAD64342CD1F8C400A6BB9E /* RecordFrameCell.swift */,
+				ABAD64362CD1F90C00A6BB9E /* FramesCollectionView.swift */,
+				ABEA0FBB2CD1FB6300454EEC /* AddFrameCell.swift */,
+				ABEA0FBD2CD1FC9300454EEC /* GenerateFrameCell.swift */,
+			);
+			path = framesPanel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -253,6 +273,8 @@
 				AB0316822CCF993C0064DD7A /* UIColor+Hex.swift in Sources */,
 				AB03168F2CCFF3DB0064DD7A /* DrawPanelView.swift in Sources */,
 				ABBE1B962CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift in Sources */,
+				ABEA0FBE2CD1FC9300454EEC /* GenerateFrameCell.swift in Sources */,
+				ABAD64372CD1F90C00A6BB9E /* FramesCollectionView.swift in Sources */,
 				AB0316A02CD097A10064DD7A /* Canvas.swift in Sources */,
 				AB03167C2CCF98930064DD7A /* LiveImageView.swift in Sources */,
 				AB03167F2CCF98CC0064DD7A /* Colors.swift in Sources */,
@@ -265,6 +287,8 @@
 				AB0316862CCFC4140064DD7A /* LiveImagePresenter.swift in Sources */,
 				AB0316A22CD11D9C0064DD7A /* LiveImageFramesPanelView.swift in Sources */,
 				AB0316732CCF93660064DD7A /* LiveImageViewController.swift in Sources */,
+				ABAD64352CD1F8C400A6BB9E /* RecordFrameCell.swift in Sources */,
+				ABEA0FBC2CD1FB6300454EEC /* AddFrameCell.swift in Sources */,
 				AB0316842CCF99790064DD7A /* Logger.swift in Sources */,
 				AB03169C2CCFFCDF0064DD7A /* InstrumentsView.swift in Sources */,
 				AB0316952CCFF7310064DD7A /* DefaultImageButton.swift in Sources */,
