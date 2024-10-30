@@ -66,7 +66,7 @@ final class GenerateFrameCell: UICollectionViewCell {
             iconLabel.centerYAnchor.constraint(equalTo: backgroundImageView.centerYAnchor),
 
             generateLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: FramesConsts.itemSpacing),
-            generateLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
+            generateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4.0),
             generateLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -FramesConsts.itemSpacing)
         ])
 

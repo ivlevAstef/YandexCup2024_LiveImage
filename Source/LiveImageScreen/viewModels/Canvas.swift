@@ -98,6 +98,17 @@ struct Canvas {
         currentFrameIndex = frames.count - 1
     }
 
+    mutating func addFrames(by records: [Canvas.Record]) {
+        cleanHistory()
+        let newFrames = records.map { record in
+            let frame = Frame()
+            frame.addRecord(record)
+            return frame
+        }
+        frames.append(contentsOf: newFrames)
+        currentFrameIndex = frames.count - newFrames.count
+    }
+
     mutating func removeFrame() {
         // Нельзя удалить единственный фрейм
         if frames.indices.contains(currentFrameIndex) && frames.count > 1 {

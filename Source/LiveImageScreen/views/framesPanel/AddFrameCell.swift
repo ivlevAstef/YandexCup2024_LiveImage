@@ -66,7 +66,7 @@ final class AddFrameCell: UICollectionViewCell {
             plusLabel.centerYAnchor.constraint(equalTo: backgroundImageView.centerYAnchor),
 
             addLabel.leftAnchor.constraint(equalTo: leftAnchor, constant: FramesConsts.itemSpacing),
-            addLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
+            addLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4.0),
             addLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -FramesConsts.itemSpacing)
         ])
     }

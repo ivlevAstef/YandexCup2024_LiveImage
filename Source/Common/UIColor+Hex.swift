@@ -39,5 +39,10 @@ extension UIColor {
 
         return (components[0] * 299.0 + components[1] * 587.0 + components[2] * 114.0) / 1000.0
     }
+
+    static func random() -> UIColor {
+        let randColor = UInt64.random(in: 2345..<12345678)
+        return color(hex: randColor)
+    }
 }
 

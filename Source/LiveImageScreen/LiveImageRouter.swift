@@ -22,7 +22,8 @@ final class LiveImageRouter {
 
     private func makeLiveImageViewScreen() -> LiveImageViewController {
         let vc = LiveImageViewController(nibName: nil, bundle: nil)
-        let presenter = LiveImagePresenter(view: vc.liveImageView)
+        let generatorPresenter = LiveImageGeneratorPresenter(view: vc)
+        let presenter = LiveImagePresenter(view: vc.liveImageView, generatorPresenter: generatorPresenter)
 
         vc.retainScreenObjects = [self, presenter]
 

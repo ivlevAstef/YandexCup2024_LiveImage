@@ -78,13 +78,15 @@ protocol LiveImageViewProtocol: AnyObject {
 
 final class LiveImagePresenter {
     private let view: LiveImageViewProtocol
+    private let generatorPresenter: LiveImageGeneratorPresenter
 
     private var canvas: Canvas = Canvas()
 
     private var isPlaying: Bool = false
 
-    init(view: LiveImageViewProtocol) {
+    init(view: LiveImageViewProtocol, generatorPresenter: LiveImageGeneratorPresenter) {
         self.view = view
+        self.generatorPresenter = generatorPresenter
 
         // Начальное состояние
         view.draw.selectedInstrument = .pencil
@@ -140,7 +142,14 @@ final class LiveImagePresenter {
         }
         view.frames.generateFramesHandler = { [weak self] in
             log.info("generate frames")
-            // TODO: generate
+            if let self {
+                self.generatorPresenter.generate(use: self.view.canvas.emptyRecord, success: { [weak self] records in
+                    log.info("generate \(records.count) frames succeess")
+                    self?.canvas.addFrames(by: records)
+                    self?.updateUI()
+                })
+            }
+
         }
     }
 
