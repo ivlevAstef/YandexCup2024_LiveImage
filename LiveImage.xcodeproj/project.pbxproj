@@ -32,12 +32,13 @@
 		AB0316A22CD11D9C0064DD7A /* LiveImageFramesPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316A12CD11D9C0064DD7A /* LiveImageFramesPanelView.swift */; };
 		AB6487FE2CD2A286003DE70C /* CanvasSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6487FD2CD2A27C003DE70C /* CanvasSize.swift */; };
 		AB6488002CD2ACC9003DE70C /* PlaySpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6487FF2CD2ACC1003DE70C /* PlaySpeed.swift */; };
+		ABA629512CD3DAEF006AFDCB /* LiveImageShareGifPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA629502CD3DAD9006AFDCB /* LiveImageShareGifPresenter.swift */; };
 		ABAD64352CD1F8C400A6BB9E /* RecordFrameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAD64342CD1F8C400A6BB9E /* RecordFrameCell.swift */; };
 		ABAD64372CD1F90C00A6BB9E /* FramesCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAD64362CD1F90C00A6BB9E /* FramesCollectionView.swift */; };
 		ABBE1B962CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABBE1B952CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift */; };
 		ABEA0FBC2CD1FB6300454EEC /* AddFrameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEA0FBB2CD1FB6300454EEC /* AddFrameCell.swift */; };
 		ABEA0FBE2CD1FC9300454EEC /* GenerateFrameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEA0FBD2CD1FC9300454EEC /* GenerateFrameCell.swift */; };
-		ABEA0FC02CD2260900454EEC /* LiveImageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEA0FBF2CD2260900454EEC /* LiveImageGenerator.swift */; };
+		ABEA0FC02CD2260900454EEC /* LiveImageGeneratorPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEA0FBF2CD2260900454EEC /* LiveImageGeneratorPresenter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,12 +70,13 @@
 		AB0316A12CD11D9C0064DD7A /* LiveImageFramesPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageFramesPanelView.swift; sourceTree = "<group>"; };
 		AB6487FD2CD2A27C003DE70C /* CanvasSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasSize.swift; sourceTree = "<group>"; };
 		AB6487FF2CD2ACC1003DE70C /* PlaySpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaySpeed.swift; sourceTree = "<group>"; };
+		ABA629502CD3DAD9006AFDCB /* LiveImageShareGifPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageShareGifPresenter.swift; sourceTree = "<group>"; };
 		ABAD64342CD1F8C400A6BB9E /* RecordFrameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordFrameCell.swift; sourceTree = "<group>"; };
 		ABAD64362CD1F90C00A6BB9E /* FramesCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FramesCollectionView.swift; sourceTree = "<group>"; };
 		ABBE1B952CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomIntensityVisualEffectView.swift; sourceTree = "<group>"; };
 		ABEA0FBB2CD1FB6300454EEC /* AddFrameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFrameCell.swift; sourceTree = "<group>"; };
 		ABEA0FBD2CD1FC9300454EEC /* GenerateFrameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateFrameCell.swift; sourceTree = "<group>"; };
-		ABEA0FBF2CD2260900454EEC /* LiveImageGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageGenerator.swift; sourceTree = "<group>"; };
+		ABEA0FBF2CD2260900454EEC /* LiveImageGeneratorPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageGeneratorPresenter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,11 +133,11 @@
 		AB0316782CCF94960064DD7A /* LiveImageScreen */ = {
 			isa = PBXGroup;
 			children = (
+				ABA629532CD3E0F8006AFDCB /* support */,
 				AB03168B2CCFCFF20064DD7A /* viewModels */,
 				AB0316872CCFCA3B0064DD7A /* views */,
 				AB0316792CCF94B90064DD7A /* LiveImageRouter.swift */,
 				AB0316852CCFC4140064DD7A /* LiveImagePresenter.swift */,
-				ABEA0FBF2CD2260900454EEC /* LiveImageGenerator.swift */,
 			);
 			path = LiveImageScreen;
 			sourceTree = "<group>";
@@ -194,6 +196,15 @@
 				AB03169B2CCFFCDF0064DD7A /* InstrumentsView.swift */,
 			);
 			path = drawPanel;
+			sourceTree = "<group>";
+		};
+		ABA629532CD3E0F8006AFDCB /* support */ = {
+			isa = PBXGroup;
+			children = (
+				ABA629502CD3DAD9006AFDCB /* LiveImageShareGifPresenter.swift */,
+				ABEA0FBF2CD2260900454EEC /* LiveImageGeneratorPresenter.swift */,
+			);
+			path = support;
 			sourceTree = "<group>";
 		};
 		ABAD64332CD1F8B400A6BB9E /* framesPanel */ = {
@@ -284,7 +295,7 @@
 				ABBE1B962CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift in Sources */,
 				ABEA0FBE2CD1FC9300454EEC /* GenerateFrameCell.swift in Sources */,
 				ABAD64372CD1F90C00A6BB9E /* FramesCollectionView.swift in Sources */,
-				ABEA0FC02CD2260900454EEC /* LiveImageGenerator.swift in Sources */,
+				ABEA0FC02CD2260900454EEC /* LiveImageGeneratorPresenter.swift in Sources */,
 				AB0316A02CD097A10064DD7A /* Canvas.swift in Sources */,
 				AB03167C2CCF98930064DD7A /* LiveImageView.swift in Sources */,
 				AB03167F2CCF98CC0064DD7A /* Colors.swift in Sources */,
@@ -299,6 +310,7 @@
 				AB0316A22CD11D9C0064DD7A /* LiveImageFramesPanelView.swift in Sources */,
 				AB0316732CCF93660064DD7A /* LiveImageViewController.swift in Sources */,
 				ABAD64352CD1F8C400A6BB9E /* RecordFrameCell.swift in Sources */,
+				ABA629512CD3DAEF006AFDCB /* LiveImageShareGifPresenter.swift in Sources */,
 				ABEA0FBC2CD1FB6300454EEC /* AddFrameCell.swift in Sources */,
 				AB0316842CCF99790064DD7A /* Logger.swift in Sources */,
 				AB6487FE2CD2A286003DE70C /* CanvasSize.swift in Sources */,

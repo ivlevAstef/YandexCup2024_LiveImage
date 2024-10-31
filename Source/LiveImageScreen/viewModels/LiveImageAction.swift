@@ -12,6 +12,7 @@ enum LiveImageAction: Hashable {
     case removeFrame
     case removeAllFrames
     case addFrame
+    case dublicateFrame
     case generateFrames
     case toggleFrames
 

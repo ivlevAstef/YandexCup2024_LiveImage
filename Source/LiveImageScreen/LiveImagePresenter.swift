@@ -19,6 +19,7 @@ typealias LiveImageDeleteFrameHandler = (Int) -> Void
 typealias LiveImageDublicateFrameHandler = (Int) -> Void
 typealias LiveImageAddFrameHandler = () -> Void
 typealias LiveImageGenerateFramesHandler = () -> Void
+typealias LiveImageShouldShareGifHandler = () -> Void
 
 protocol LiveImageActionViewProtocol: AnyObject {
     var selectActionHandler: LiveImageActionSelectHandler? { get set }
@@ -83,14 +84,18 @@ protocol LiveImageViewProtocol: AnyObject {
 
 final class LiveImagePresenter {
     private let view: LiveImageViewProtocol
+    private let shareGifPresenter: LiveImageShareGifPresenter
     private let generatorPresenter: LiveImageGeneratorPresenter
 
     private var canvas: Canvas = Canvas()
 
     private var isPlaying: Bool = false
 
-    init(view: LiveImageViewProtocol, generatorPresenter: LiveImageGeneratorPresenter) {
+    init(view: LiveImageViewProtocol,
+         shareGifPresenter: LiveImageShareGifPresenter,
+         generatorPresenter: LiveImageGeneratorPresenter) {
         self.view = view
+        self.shareGifPresenter = shareGifPresenter
         self.generatorPresenter = generatorPresenter
 
         // Начальное состояние
@@ -152,6 +157,13 @@ final class LiveImagePresenter {
         view.frames.generateFramesHandler = { [weak self] in
             self?.generateFrames()
         }
+
+        shareGifPresenter.currentRecordsProvider = { [weak self] in
+            if let self {
+                return self.canvas.anyRecords(emptyRecord: self.view.canvas.emptyRecord)
+            }
+            return []
+        }
     }
 
     private func processAction(_ action: LiveImageAction) {
@@ -162,6 +174,8 @@ final class LiveImagePresenter {
             canvas.currentFrame.redo()
         case .addFrame:
             canvas.addFrame()
+        case .dublicateFrame:
+            canvas.dublicateFrame(from: canvas.currentFrameIndex)
         case .generateFrames:
             generateFrames()
             return

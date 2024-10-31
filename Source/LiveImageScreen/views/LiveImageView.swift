@@ -14,8 +14,14 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
     var draw: LiveImageDrawViewProtocol { drawPanel }
     var frames: LiveImageFramesViewProtocol { framesPanel }
 
+    var shouldShareHandler: LiveImageShouldShareGifHandler?
+
     private let actionPanel = ActionPanelView()
     private let canvasView = CanvasView()
+    private let shareButton = DefaultImageButton(
+        image: UIImage(systemName: "square.and.arrow.up")?.withRenderingMode(.alwaysOriginal),
+        size: 40.0
+    )
     private let drawPanel = DrawPanelView()
     private let framesPanel = LiveImageFramesPanelView()
 
@@ -35,8 +41,13 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
 
         addCSubview(actionPanel)
         addCSubview(canvasView)
+        addCSubview(shareButton)
         addCSubview(drawPanel)
         addCSubview(framesPanel)
+
+        shareButton.addAction(UIAction { [weak self] _ in
+            self?.shouldShareHandler?()
+        }, for: .touchUpInside)
 
         makeConstraints()
 
@@ -54,6 +65,9 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
             canvasView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
             canvasView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
             canvasView.bottomAnchor.constraint(equalTo: drawPanel.topAnchor, constant: -22.0),
+
+            shareButton.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 4.0),
+            shareButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
 
             drawPanel.leftAnchor.constraint(greaterThanOrEqualTo: safeAreaLayoutGuide.leftAnchor),
             drawPanel.rightAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.rightAnchor),

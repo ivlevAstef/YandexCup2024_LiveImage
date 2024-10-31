@@ -100,6 +100,9 @@ final class ActionPanelView: UIView, LiveImageActionViewProtocol {
             UIAction(title: "Add Frame", handler: { [weak self] _ in
                 self?.selectActionHandler?(.addFrame)
             }),
+            UIAction(title: "Dublicate Current Frame", handler: { [weak self] _ in
+                self?.selectActionHandler?(.dublicateFrame)
+            }),
             UIAction(title: "Generate Frames", handler: { [weak self] _ in
                 self?.selectActionHandler?(.generateFrames)
             }),
@@ -179,6 +182,7 @@ extension LiveImageAction {
         case .removeFrame: return UIImage(named: "remove_frame")
         case .removeAllFrames: return nil
         case .addFrame: return UIImage(named: "plus_frame")
+        case .dublicateFrame: return nil
         case .generateFrames: return nil
         case .toggleFrames: return UIImage(named: "frames")
         case .pause: return UIImage(named: "pause")

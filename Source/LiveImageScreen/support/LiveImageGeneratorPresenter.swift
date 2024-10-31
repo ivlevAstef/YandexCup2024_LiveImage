@@ -10,7 +10,7 @@ import UIKit
 protocol LiveImageGeneratorViewProtocol: AnyObject {
     func showWriteHowManyFramesGenerate(success: @escaping (Int) -> Void)
 
-    func showProgress()
+    func showProgress(text: String)
     func endProgress()
 }
 
@@ -23,7 +23,7 @@ final class LiveImageGeneratorPresenter {
 
     func generate(canvasSize: CanvasSize, success successHandler: @escaping ([Canvas.Record]) -> Void) {
         view.showWriteHowManyFramesGenerate { [weak self, weak view] framesCount in
-            view?.showProgress()
+            view?.showProgress(text: "Generating...")
             DispatchQueue.global().async {
                 guard let self else {
                     return

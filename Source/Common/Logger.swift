@@ -18,6 +18,13 @@ final class Logger {
         fatalError(msg, file: path, line: line)
     }
 
+    func assert(_ condition: Bool, _ msg: String, path: StaticString = #file, line: UInt = #line) {
+        if condition {
+            return
+        }
+        assert(msg, path: path, line: line)
+    }
+
     func assert(_ msg: String, path: StaticString = #file, line: UInt = #line) {
         let msg = format(msg, level: "⁉️", path: path, line: line)
         assertionFailure(msg)

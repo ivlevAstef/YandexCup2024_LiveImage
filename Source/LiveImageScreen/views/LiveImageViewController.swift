@@ -7,7 +7,11 @@
 
 import UIKit
 
-final class LiveImageViewController: UIViewController, LiveImageGeneratorViewProtocol {
+final class LiveImageViewController: UIViewController, LiveImageGeneratorViewProtocol, LiveImageShareGifViewProtocol {
+    var shouldShareHandler: LiveImageShouldShareGifHandler? {
+        get { liveImageView.shouldShareHandler }
+        set { liveImageView.shouldShareHandler = newValue }
+    }
 
     private(set) lazy var liveImageView = LiveImageView()
 
@@ -20,6 +24,8 @@ final class LiveImageViewController: UIViewController, LiveImageGeneratorViewPro
     }
 
     func showWriteHowManyFramesGenerate(success successHandler: @escaping (Int) -> Void) {
+        log.assert(Thread.isMainThread, "support show write how many frames generate only from main thread")
+
         let alertController = UIAlertController(title: "Generate Frames",
                                                 message: "Please enter how many frames you need to generate",
                                                 preferredStyle: .alert)
@@ -58,10 +64,11 @@ final class LiveImageViewController: UIViewController, LiveImageGeneratorViewPro
         present(alertController, animated: true)
     }
 
-    func showProgress() {
+    func showProgress(text: String) {
+        log.assert(Thread.isMainThread, "support show progress only from main thread")
         view.isUserInteractionEnabled = false
 
-        let alertController = UIAlertController(title: "Generating...", message: nil, preferredStyle: .alert)
+        let alertController = UIAlertController(title: text, message: nil, preferredStyle: .alert)
         progressAlertController = alertController
 
         let indicatorView = UIActivityIndicatorView(frame: alertController.view.bounds)
@@ -77,10 +84,27 @@ final class LiveImageViewController: UIViewController, LiveImageGeneratorViewPro
     }
 
     func endProgress() {
+        endProgress(completion: nil)
+    }
+
+    func endProgress(completion: (() -> Void)?) {
+        log.assert(Thread.isMainThread, "support hide progress only from main thread")
         view.isUserInteractionEnabled = true
 
-        progressAlertController?.dismiss(animated: true)
+        progressAlertController?.dismiss(animated: true, completion: completion)
         progressAlertController = nil
+    }
+
+    func showShareMenu(for fileURL: URL) {
+        log.assert(Thread.isMainThread, "support show share menu only from main thread")
+        let filesToShare: [Any] = [fileURL]
+
+        let activityViewController = UIActivityViewController(activityItems: filesToShare, applicationActivities: nil)
+        activityViewController.completionWithItemsHandler = { activityType, completed, returnedItems, activityError in
+
+        }
+
+        present(activityViewController, animated: true)
     }
 }
 
