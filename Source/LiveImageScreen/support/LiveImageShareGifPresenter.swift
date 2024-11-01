@@ -11,6 +11,7 @@ import UniformTypeIdentifiers
 import CoreGraphics
 import ImageIO
 
+typealias LiveImageShouldShareGifHandler = () -> Void
 protocol LiveImageShareGifViewProtocol: AnyObject {
     var shouldShareHandler: LiveImageShouldShareGifHandler? { get set }
 

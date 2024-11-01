@@ -33,6 +33,7 @@
 		AB6487FE2CD2A286003DE70C /* CanvasSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6487FD2CD2A27C003DE70C /* CanvasSize.swift */; };
 		AB6488002CD2ACC9003DE70C /* PlaySpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6487FF2CD2ACC1003DE70C /* PlaySpeed.swift */; };
 		ABA629512CD3DAEF006AFDCB /* LiveImageShareGifPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA629502CD3DAD9006AFDCB /* LiveImageShareGifPresenter.swift */; };
+		ABA629552CD4965E006AFDCB /* LiveImageColorPickerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA629542CD49652006AFDCB /* LiveImageColorPickerPresenter.swift */; };
 		ABAD64352CD1F8C400A6BB9E /* RecordFrameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAD64342CD1F8C400A6BB9E /* RecordFrameCell.swift */; };
 		ABAD64372CD1F90C00A6BB9E /* FramesCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAD64362CD1F90C00A6BB9E /* FramesCollectionView.swift */; };
 		ABBE1B962CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABBE1B952CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift */; };
@@ -71,6 +72,7 @@
 		AB6487FD2CD2A27C003DE70C /* CanvasSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasSize.swift; sourceTree = "<group>"; };
 		AB6487FF2CD2ACC1003DE70C /* PlaySpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaySpeed.swift; sourceTree = "<group>"; };
 		ABA629502CD3DAD9006AFDCB /* LiveImageShareGifPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageShareGifPresenter.swift; sourceTree = "<group>"; };
+		ABA629542CD49652006AFDCB /* LiveImageColorPickerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageColorPickerPresenter.swift; sourceTree = "<group>"; };
 		ABAD64342CD1F8C400A6BB9E /* RecordFrameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordFrameCell.swift; sourceTree = "<group>"; };
 		ABAD64362CD1F90C00A6BB9E /* FramesCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FramesCollectionView.swift; sourceTree = "<group>"; };
 		ABBE1B952CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomIntensityVisualEffectView.swift; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 		ABA629532CD3E0F8006AFDCB /* support */ = {
 			isa = PBXGroup;
 			children = (
+				ABA629542CD49652006AFDCB /* LiveImageColorPickerPresenter.swift */,
 				ABA629502CD3DAD9006AFDCB /* LiveImageShareGifPresenter.swift */,
 				ABEA0FBF2CD2260900454EEC /* LiveImageGeneratorPresenter.swift */,
 			);
@@ -314,6 +317,7 @@
 				ABEA0FBC2CD1FB6300454EEC /* AddFrameCell.swift in Sources */,
 				AB0316842CCF99790064DD7A /* Logger.swift in Sources */,
 				AB6487FE2CD2A286003DE70C /* CanvasSize.swift in Sources */,
+				ABA629552CD4965E006AFDCB /* LiveImageColorPickerPresenter.swift in Sources */,
 				AB03169C2CCFFCDF0064DD7A /* InstrumentsView.swift in Sources */,
 				AB0316952CCFF7310064DD7A /* DefaultImageButton.swift in Sources */,
 				AB0316712CCF93660064DD7A /* AppDelegate.swift in Sources */,

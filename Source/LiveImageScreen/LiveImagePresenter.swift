@@ -9,18 +9,6 @@ import Foundation
 
 typealias LiveImageActionSelectHandler = (_ action: LiveImageAction) -> Void
 typealias LiveImagePlayWithSpeedHandler = (_ speed: PlaySpeed) -> Void
-typealias LiveImageInstrumentSelectHandler = (_ instrument: DrawInstrument) -> Void
-typealias LiveImageColorSelectHandler = (_ color: DrawColor) -> Void
-
-typealias LiveImageRecordMakedHandler = (Canvas.Record) -> Void
-
-typealias LiveImageSelectedFrameChangedHandler = (Int) -> Void
-typealias LiveImageDeleteFrameHandler = (Int) -> Void
-typealias LiveImageDublicateFrameHandler = (Int) -> Void
-typealias LiveImageAddFrameHandler = () -> Void
-typealias LiveImageGenerateFramesHandler = () -> Void
-typealias LiveImageShouldShareGifHandler = () -> Void
-
 protocol LiveImageActionViewProtocol: AnyObject {
     var selectActionHandler: LiveImageActionSelectHandler? { get set }
     var playWithSpeedHandler: LiveImagePlayWithSpeedHandler? { get set }
@@ -29,19 +17,26 @@ protocol LiveImageActionViewProtocol: AnyObject {
     var framesIsShown: Bool { get set }
 }
 
+typealias LiveImageInstrumentSelectHandler = (_ instrument: DrawInstrument) -> Void
+typealias LiveImageColorSelectHandler = (_ color: DrawColor) -> Void
+typealias LiveImageShowMoreColorHandler = () -> Void
 protocol LiveImageDrawViewProtocol: AnyObject {
     var selectInstrumentHandler: LiveImageInstrumentSelectHandler? { get set }
     var selectColorHandler: LiveImageColorSelectHandler? { get set }
+    var showMoreColorsHandler: LiveImageShowMoreColorHandler? { get set }
 
     var selectedInstrument: DrawInstrument { get set }
     var selectedColor: DrawColor { get set }
     var selectedWidth: CGFloat { get set }
+
+    var shownColors: [DrawColor] { get set }
 
     func setEnable(_ enable: Bool)
 
     func hidePopup()
 }
 
+typealias LiveImageRecordMakedHandler = (Canvas.Record) -> Void
 protocol LiveImageCanvasViewProtocol: AnyObject {
     var recordMakedHandler: LiveImageRecordMakedHandler? { get set }
 
@@ -60,6 +55,11 @@ protocol LiveImageCanvasViewProtocol: AnyObject {
     func stopPlay()
 }
 
+typealias LiveImageSelectedFrameChangedHandler = (Int) -> Void
+typealias LiveImageDeleteFrameHandler = (Int) -> Void
+typealias LiveImageDublicateFrameHandler = (Int) -> Void
+typealias LiveImageAddFrameHandler = () -> Void
+typealias LiveImageGenerateFramesHandler = () -> Void
 protocol LiveImageFramesViewProtocol: AnyObject {
     var selectedFrameChangedHandler: LiveImageSelectedFrameChangedHandler? { get set }
     var deleteFrameHandler: LiveImageDeleteFrameHandler? { get set }
@@ -86,6 +86,7 @@ final class LiveImagePresenter {
     private let view: LiveImageViewProtocol
     private let shareGifPresenter: LiveImageShareGifPresenter
     private let generatorPresenter: LiveImageGeneratorPresenter
+    private let colorPickerPresenter: LiveImageColorPickerPresenter
 
     private var canvas: Canvas = Canvas()
 
@@ -93,21 +94,36 @@ final class LiveImagePresenter {
 
     init(view: LiveImageViewProtocol,
          shareGifPresenter: LiveImageShareGifPresenter,
-         generatorPresenter: LiveImageGeneratorPresenter) {
+         generatorPresenter: LiveImageGeneratorPresenter,
+         colorPickerPresenter: LiveImageColorPickerPresenter) {
         self.view = view
         self.shareGifPresenter = shareGifPresenter
         self.generatorPresenter = generatorPresenter
+        self.colorPickerPresenter = colorPickerPresenter
 
         // Начальное состояние
         view.draw.selectedInstrument = .pencil
         view.draw.selectedWidth = 5.0
-        view.draw.selectedColor = .black
+        colorPickerPresenter.currentColor = .black
 
         subscribe()
         updateUI()
     }
 
     private func subscribe() {
+        subscribeActions()
+        subscribeDraw()
+        subscribeFrames()
+
+        shareGifPresenter.currentRecordsProvider = { [weak self] in
+            if let self {
+                return self.canvas.anyRecords(emptyRecord: self.view.canvas.emptyRecord)
+            }
+            return []
+        }
+    }
+
+    private func subscribeActions() {
         view.action.selectActionHandler = { [weak self] action in
             log.info("Tap on action: \(action)")
             self?.processAction(action)
@@ -116,7 +132,9 @@ final class LiveImagePresenter {
             self?.play(speed: speed)
             self?.updateUI()
         }
+    }
 
+    private func subscribeDraw() {
         view.draw.selectInstrumentHandler = { [weak self] instrument in
             log.info("Tap on instument: \(instrument)")
             self?.view.draw.selectedInstrument = instrument
@@ -124,8 +142,14 @@ final class LiveImagePresenter {
         }
         view.draw.selectColorHandler = { [weak self] color in
             log.info("Tap on color: \(color)")
-            self?.view.draw.selectedColor = color
-            self?.updateUI()
+            self?.colorPickerPresenter.currentColor = color
+            self?.updateColors()
+        }
+        view.draw.showMoreColorsHandler = { [weak self] in
+            self?.colorPickerPresenter.showColorPicker(colorSelectedHandler: { color in
+                self?.colorPickerPresenter.currentColor = color
+                self?.updateColors()
+            })
         }
 
         view.canvas.recordMakedHandler = { [weak self] record in
@@ -133,7 +157,9 @@ final class LiveImagePresenter {
             self?.canvas.currentFrame.addRecord(record)
             self?.updateUI()
         }
+    }
 
+    private func subscribeFrames() {
         view.frames.selectedFrameChangedHandler = { [weak self] newIndex in
             log.info("change current frame on \(newIndex)")
             self?.canvas.changeFrameIndex(newIndex)
@@ -156,13 +182,6 @@ final class LiveImagePresenter {
         }
         view.frames.generateFramesHandler = { [weak self] in
             self?.generateFrames()
-        }
-
-        shareGifPresenter.currentRecordsProvider = { [weak self] in
-            if let self {
-                return self.canvas.anyRecords(emptyRecord: self.view.canvas.emptyRecord)
-            }
-            return []
         }
     }
 
@@ -199,8 +218,8 @@ final class LiveImagePresenter {
     }
 
     private func updateUI() {
+        updateColors()
         view.canvas.instrument = view.draw.selectedInstrument
-        view.canvas.color = view.draw.selectedColor
         if view.draw.selectedInstrument == .erase { // Чтобы стирать было удобней, пока нет выбора ширины.
             view.canvas.width = view.draw.selectedWidth * 2
         } else {
@@ -285,5 +304,13 @@ final class LiveImagePresenter {
             self?.canvas.addFrames(by: records)
             self?.updateUI()
         })
+    }
+
+    private func updateColors() {
+        // colorPickerPresenter.currentColor - это считается основным, от него цвет раскидываем в другие места.
+
+        view.canvas.color = colorPickerPresenter.currentColor
+        view.draw.selectedColor = colorPickerPresenter.currentColor
+        view.draw.shownColors = colorPickerPresenter.colorHistory
     }
 }

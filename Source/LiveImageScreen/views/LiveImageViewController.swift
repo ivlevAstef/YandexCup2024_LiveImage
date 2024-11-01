@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import Combine
 
-final class LiveImageViewController: UIViewController, LiveImageGeneratorViewProtocol, LiveImageShareGifViewProtocol {
-    var shouldShareHandler: LiveImageShouldShareGifHandler? {
+final class LiveImageViewController: UIViewController {
+    var shouldShareHandler: LiveImageShouldShareGifHandler? { // LiveImageShareGifViewProtocol
         get { liveImageView.shouldShareHandler }
         set { liveImageView.shouldShareHandler = newValue }
     }
@@ -23,6 +24,41 @@ final class LiveImageViewController: UIViewController, LiveImageGeneratorViewPro
         view = liveImageView
     }
 
+    // MARK: - For general view protocols
+
+    func showProgress(text: String) {
+        log.assert(Thread.isMainThread, "support show progress only from main thread")
+        view.isUserInteractionEnabled = false
+
+        let alertController = UIAlertController(title: text, message: nil, preferredStyle: .alert)
+        progressAlertController = alertController
+
+        let indicatorView = UIActivityIndicatorView(frame: alertController.view.bounds)
+        alertController.view.addCSubview(indicatorView)
+        indicatorView.isUserInteractionEnabled = false
+        NSLayoutConstraint.activate([
+            indicatorView.centerYAnchor.constraint(equalTo: alertController.view.centerYAnchor),
+            indicatorView.centerXAnchor.constraint(equalTo: alertController.view.centerXAnchor, constant: 75.0)
+        ])
+        indicatorView.startAnimating()
+
+        present(alertController, animated: true)
+    }
+
+    func endProgress() {
+        endProgress(completion: nil)
+    }
+
+    func endProgress(completion: (() -> Void)?) {
+        log.assert(Thread.isMainThread, "support hide progress only from main thread")
+        view.isUserInteractionEnabled = true
+
+        progressAlertController?.dismiss(animated: true, completion: completion)
+        progressAlertController = nil
+    }
+}
+
+extension LiveImageViewController: LiveImageGeneratorViewProtocol {
     func showWriteHowManyFramesGenerate(success successHandler: @escaping (Int) -> Void) {
         log.assert(Thread.isMainThread, "support show write how many frames generate only from main thread")
 
@@ -63,38 +99,9 @@ final class LiveImageViewController: UIViewController, LiveImageGeneratorViewPro
 
         present(alertController, animated: true)
     }
+}
 
-    func showProgress(text: String) {
-        log.assert(Thread.isMainThread, "support show progress only from main thread")
-        view.isUserInteractionEnabled = false
-
-        let alertController = UIAlertController(title: text, message: nil, preferredStyle: .alert)
-        progressAlertController = alertController
-
-        let indicatorView = UIActivityIndicatorView(frame: alertController.view.bounds)
-        alertController.view.addCSubview(indicatorView)
-        indicatorView.isUserInteractionEnabled = false
-        NSLayoutConstraint.activate([
-            indicatorView.centerYAnchor.constraint(equalTo: alertController.view.centerYAnchor),
-            indicatorView.centerXAnchor.constraint(equalTo: alertController.view.centerXAnchor, constant: 75.0)
-        ])
-        indicatorView.startAnimating()
-
-        present(alertController, animated: true)
-    }
-
-    func endProgress() {
-        endProgress(completion: nil)
-    }
-
-    func endProgress(completion: (() -> Void)?) {
-        log.assert(Thread.isMainThread, "support hide progress only from main thread")
-        view.isUserInteractionEnabled = true
-
-        progressAlertController?.dismiss(animated: true, completion: completion)
-        progressAlertController = nil
-    }
-
+extension LiveImageViewController: LiveImageShareGifViewProtocol {
     func showShareMenu(for fileURL: URL) {
         log.assert(Thread.isMainThread, "support show share menu only from main thread")
         let filesToShare: [Any] = [fileURL]
@@ -108,3 +115,47 @@ final class LiveImageViewController: UIViewController, LiveImageGeneratorViewPro
     }
 }
 
+
+extension LiveImageViewController: LiveImageColorPickerViewProtocol {
+    func showColorPicker(currentColor: UIColor, completion: @escaping (UIColor?) -> Void) {
+        let picker = UIColorPickerViewController()
+        picker.supportsAlpha = false
+        picker.selectedColor = currentColor
+
+        var selectedColor: UIColor?
+        var colorPickerCancellable: AnyCancellable? = picker.publisher(for: \.selectedColor).dropFirst().sink { color in
+            selectedColor = color
+        }
+
+        var retainedDelegate: UIAdaptivePresentationControllerDelegate?
+        let delegate = PickerDelegateImpl {
+            retainedDelegate = nil
+            _ = retainedDelegate
+            colorPickerCancellable = nil
+            _ = colorPickerCancellable
+
+            completion(selectedColor)
+        }
+        retainedDelegate = delegate
+        picker.delegate = delegate
+        picker.presentationController?.delegate = delegate
+
+        present(picker, animated: true)
+    }
+}
+
+private final class PickerDelegateImpl: NSObject, UIAdaptivePresentationControllerDelegate, UIColorPickerViewControllerDelegate {
+    private let completion: () -> Void
+
+    init(completion: @escaping () -> Void) {
+        self.completion = completion
+    }
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        completion()
+    }
+
+    func colorPickerViewControllerDidFinish(_ viewController: UIColorPickerViewController) {
+        completion()
+    }
+}

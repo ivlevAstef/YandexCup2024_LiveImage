@@ -17,6 +17,10 @@ final class DrawPanelView: UIView, LiveImageDrawViewProtocol {
         get { selectedColorView.selectColorHandler }
         set { selectedColorView.selectColorHandler = newValue }
     }
+    var showMoreColorsHandler: LiveImageShowMoreColorHandler? {
+        get { selectedColorView.showMoreColorsHandler }
+        set { selectedColorView.showMoreColorsHandler = newValue }
+    }
 
     var selectedInstrument: DrawInstrument {
         get { instrumentsView.selectedInstrument }
@@ -26,8 +30,12 @@ final class DrawPanelView: UIView, LiveImageDrawViewProtocol {
         get { selectedColorView.selectedColor }
         set { selectedColorView.selectedColor = newValue }
     }
-
     var selectedWidth: CGFloat = 5.0
+
+    var shownColors: [DrawColor] {
+        get { selectedColorView.shownColors }
+        set { selectedColorView.shownColors = newValue }
+    }
 
     private let instrumentsView = InstrumentsView()
     private let selectedColorView = SelectedColorView()

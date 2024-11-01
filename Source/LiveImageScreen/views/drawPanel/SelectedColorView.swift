@@ -9,9 +9,21 @@ import UIKit
 
 private enum Consts {
     static let size: CGFloat = 32.0
+    static let space: CGFloat = 16.0
+    static let maxShownColors: Int = 5
 }
 
 final class SelectedColorView: UIView {
+    var showMoreColorsHandler: LiveImageShowMoreColorHandler? {
+        get { colorPaletteView.showMoreColorsHandler }
+        set {
+            colorPaletteView.showMoreColorsHandler = { [weak self] in
+                self?.hidePalette()
+                newValue?()
+            }
+        }
+    }
+
     var selectColorHandler: LiveImageColorSelectHandler? {
         get { colorPaletteView.selectColorHandler }
         set { colorPaletteView.selectColorHandler = newValue }
@@ -24,6 +36,10 @@ final class SelectedColorView: UIView {
             }
             updateBorderState()
         }
+    }
+    var shownColors: [DrawColor] {
+        get { colorPaletteView.shownColors }
+        set { colorPaletteView.shownColors = newValue }
     }
 
     private let colorPaletteView = ColorPaletteView()
@@ -118,18 +134,18 @@ final class SelectedColorView: UIView {
 
 private final class ColorPaletteView: UIView {
     var selectColorHandler: LiveImageColorSelectHandler?
+    var showMoreColorsHandler: LiveImageShowMoreColorHandler?
+
+    var shownColors: [DrawColor] = [] {
+        didSet {
+            updateColorButtons()
+        }
+    }
 
     private let blurEffectView = CustomIntensityVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterial), intensity: 0.3)
 
     private let moreColorsButton = MoreColorsButton()
-    private let blackColorButton = ColoredButton(color: .black)
-    private let redColorButton = ColoredButton(color: .red)
-    private let blueColorButton = ColoredButton(color: .blue)
-    private let greenColorButton = ColoredButton(color: .green)
-
-    private var colorButtons: [ColoredButton] {
-        return [blackColorButton, redColorButton, blueColorButton, greenColorButton]
-    }
+    private let colorButtonsStack = UIStackView(frame: .zero)
 
 
     init() {
@@ -149,22 +165,16 @@ private final class ColorPaletteView: UIView {
         layer.masksToBounds = true
 
         addCSubview(blurEffectView)
-
         addCSubview(moreColorsButton)
-        addCSubview(blackColorButton)
-        addCSubview(redColorButton)
-        addCSubview(blueColorButton)
-        addCSubview(greenColorButton)
+        addCSubview(colorButtonsStack)
 
-        for button in colorButtons {
-            button.tapOnColorButton = { [weak self, color = button.color] in
-                self?.selectColorHandler?(color)
-            }
-        }
+        moreColorsButton.addAction(UIAction { [weak self] _ in
+            self?.showMoreColorsHandler?()
+        }, for: .touchUpInside)
 
-//        moreColorsButton.addAction(UIAction { [weak self] _ in
-//            self?.showMoreColors()
-//        }, for: .touchUpInside)
+        colorButtonsStack.axis = .horizontal
+        colorButtonsStack.spacing = Consts.space
+        colorButtonsStack.distribution = .equalSpacing
 
         makeConstraints()
     }
@@ -177,25 +187,27 @@ private final class ColorPaletteView: UIView {
             blurEffectView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
 
-        // Можно конечно было и на stackView, ну да ладно - мы же тут не за переиспользование, в самом деле :D
-        let space = 16.0
         NSLayoutConstraint.activate([
-            moreColorsButton.leftAnchor.constraint(equalTo: leftAnchor, constant: space),
+            moreColorsButton.leftAnchor.constraint(equalTo: leftAnchor, constant: Consts.space),
             moreColorsButton.centerYAnchor.constraint(equalTo: centerYAnchor),
 
-            blackColorButton.leftAnchor.constraint(equalTo: moreColorsButton.rightAnchor, constant: space),
-            blackColorButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-
-            redColorButton.leftAnchor.constraint(equalTo: blackColorButton.rightAnchor, constant: space),
-            redColorButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-
-            blueColorButton.leftAnchor.constraint(equalTo: redColorButton.rightAnchor, constant: space),
-            blueColorButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-
-            greenColorButton.leftAnchor.constraint(equalTo: blueColorButton.rightAnchor, constant: space),
-            greenColorButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            greenColorButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -space)
+            colorButtonsStack.leftAnchor.constraint(equalTo: moreColorsButton.rightAnchor, constant: Consts.space),
+            colorButtonsStack.rightAnchor.constraint(equalTo: rightAnchor, constant: -Consts.space),
+            colorButtonsStack.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
+    }
+
+    private func updateColorButtons() {
+        colorButtonsStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        for color in shownColors.prefix(Consts.maxShownColors) {
+            let button = ColoredButton(color: color)
+            button.tapOnColorButton = { [weak self, color = button.color] in
+                self?.selectColorHandler?(color)
+            }
+
+            colorButtonsStack.addArrangedSubview(button)
+        }
     }
 }
 

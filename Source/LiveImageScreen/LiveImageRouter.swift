@@ -24,9 +24,11 @@ final class LiveImageRouter {
         let vc = LiveImageViewController(nibName: nil, bundle: nil)
         let shareGifPresenter = LiveImageShareGifPresenter(view: vc)
         let generatorPresenter = LiveImageGeneratorPresenter(view: vc)
+        let colorPickerPresenter = LiveImageColorPickerPresenter(view: vc)
         let presenter = LiveImagePresenter(view: vc.liveImageView,
                                            shareGifPresenter: shareGifPresenter,
-                                           generatorPresenter: generatorPresenter)
+                                           generatorPresenter: generatorPresenter,
+                                           colorPickerPresenter: colorPickerPresenter)
 
         vc.retainScreenObjects = [self, presenter]
 
