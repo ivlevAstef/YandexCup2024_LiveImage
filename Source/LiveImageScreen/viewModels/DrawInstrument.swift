@@ -9,4 +9,9 @@ enum DrawInstrument: Hashable {
     case pencil
     case brush
     case erase
+
+    case rectangle
+    case circle
+    case triangle
+    case arrow
 }

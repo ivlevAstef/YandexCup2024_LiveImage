@@ -67,6 +67,7 @@ final class DrawPanelView: UIView, LiveImageDrawViewProtocol {
 
     func hidePopup() {
         selectedColorView.hidePopup()
+        instrumentsView.hidePopup()
     }
 
     private func commonInit() {

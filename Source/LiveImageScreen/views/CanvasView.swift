@@ -179,6 +179,67 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
 
     // MARK: - Draw
 
+    private func updateDrawLayerStyle() {
+        drawLayer.shadowColor = nil
+        drawLayer.shadowRadius = 0
+        drawLayer.shadowOpacity = 0.0
+        drawLayer.lineWidth = width
+
+        switch instrument {
+        case .pencil:
+            drawLayer.lineCap = .square
+            drawLayer.strokeColor = color.cgColor
+        case .brush:
+            drawLayer.shadowColor = color.cgColor
+            drawLayer.shadowRadius = width * 0.15
+            drawLayer.shadowOpacity = 1.0
+            drawLayer.shadowOffset = .zero
+            drawLayer.lineWidth = 0.0
+            drawLayer.lineCap = .round
+            drawLayer.strokeColor = color.cgColor
+        case .erase:
+            // erase рисуем сразу в context, так-как нужен blendmode который на Layer не получить.
+            break
+        case .rectangle, .circle, .triangle:
+            drawLayer.lineCap = .square
+            drawLayer.strokeColor = color.cgColor
+        case .arrow:
+            drawLayer.lineCap = .round
+            drawLayer.strokeColor = color.cgColor
+        }
+        drawLayer.opacity = 1.0
+        drawLayer.fillColor = UIColor.clear.cgColor
+    }
+
+    private func updateDrawLayer() {
+        switch instrument {
+        case .pencil:
+            drawLayer.shadowPath = nil
+            drawLayer.path = makeLineDrawPath().cgPath
+        case .brush:
+            let linePath = makeLineDrawPath()
+            drawLayer.shadowPath = linePath.cgPath.copy(strokingWithWidth: width, lineCap: .round, lineJoin: .round, miterLimit: 0)
+            drawLayer.path = linePath.cgPath
+        case .erase:
+            currentRecordView.image = makeErasedImage()
+
+        case .rectangle:
+            drawLayer.shadowPath = nil
+            drawLayer.path = makeRectangleDrawPath().cgPath
+        case .circle:
+            drawLayer.shadowPath = nil
+            drawLayer.path = makeCircleDrawPath().cgPath
+        case .triangle:
+            drawLayer.shadowPath = nil
+            drawLayer.path = makeTriangleDrawPath().cgPath
+        case .arrow:
+            drawLayer.shadowPath = nil
+            drawLayer.path = makeArrowDrawPath().cgPath
+        }
+    }
+
+    // MARK: Figures
+
     private func makeLineDrawPath() -> UIBezierPath {
         let linePath = UIBezierPath()
         let smoothPoints = pathPositions.smooth
@@ -194,45 +255,83 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         return linePath
     }
 
-    private func updateDrawLayerStyle() {
-        switch instrument {
-        case .pencil:
-            drawLayer.shadowColor = nil
-            drawLayer.shadowRadius = 0
-            drawLayer.shadowOpacity = 0.0
-            drawLayer.lineWidth = width
-            drawLayer.lineCap = .square
-            drawLayer.strokeColor = color.cgColor
-        case .brush:
-            drawLayer.shadowColor = color.cgColor
-            drawLayer.shadowRadius = width * 0.15
-            drawLayer.shadowOpacity = 1.0
-            drawLayer.shadowOffset = .zero
-            drawLayer.lineWidth = 0.0
-            drawLayer.lineCap = .round
-            drawLayer.strokeColor = color.cgColor
-        case .erase:
-            // erase рисуем сразу в context, так-как нужен blendmode который на Layer не получить.
-            break
+    private func makeRectangleDrawPath() -> UIBezierPath {
+        guard let firstPoint = pathPositions.first, let lastPoint = pathPositions.last, pathPositions.count >= 2 else {
+            return UIBezierPath()
         }
-        drawLayer.opacity = 1.0
-        drawLayer.fillColor = UIColor.clear.cgColor
+
+        let minX = min(firstPoint.x, lastPoint.x)
+        let minY = min(firstPoint.y, lastPoint.y)
+        let maxX = max(firstPoint.x, lastPoint.x)
+        let maxY = max(firstPoint.y, lastPoint.y)
+
+        let path = UIBezierPath(rect: CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY))
+        return  path
     }
 
-    private func updateDrawLayer() {
-        switch instrument {
-        case .pencil:
-            let linePath = makeLineDrawPath()
-            drawLayer.shadowPath = nil
-            drawLayer.path = linePath.cgPath
-        case .brush:
-            let linePath = makeLineDrawPath()
-            drawLayer.shadowPath = linePath.cgPath.copy(strokingWithWidth: width, lineCap: .round, lineJoin: .round, miterLimit: 0)
-            drawLayer.path = linePath.cgPath
-        case .erase:
-            currentRecordView.image = makeErasedImage()
+    private func makeCircleDrawPath() -> UIBezierPath {
+        guard let firstPoint = pathPositions.first, let lastPoint = pathPositions.last, pathPositions.count >= 2 else {
+            return UIBezierPath()
         }
+
+        let minX = min(firstPoint.x, lastPoint.x)
+        let minY = min(firstPoint.y, lastPoint.y)
+        let maxX = max(firstPoint.x, lastPoint.x)
+        let maxY = max(firstPoint.y, lastPoint.y)
+        let size = max(maxX - minX, maxY - minY)
+
+        let path = UIBezierPath(ovalIn: CGRect(x: minX, y: minY, width: size, height: size))
+        return  path
     }
+
+    private func makeTriangleDrawPath() -> UIBezierPath {
+        guard let firstPoint = pathPositions.first, let lastPoint = pathPositions.last, pathPositions.count >= 2 else {
+            return UIBezierPath()
+        }
+
+        let path = UIBezierPath()
+        path.move(to: firstPoint)
+        path.addLine(to: CGPoint(x: lastPoint.x, y: firstPoint.y))
+        path.addLine(to: CGPoint(x: (firstPoint.x + lastPoint.x) * 0.5, y: lastPoint.y))
+        path.close()
+
+        return path
+    }
+
+    private func makeArrowDrawPath() -> UIBezierPath {
+        guard let start = pathPositions.first, let end = pathPositions.last, pathPositions.count >= 2 else {
+            return UIBezierPath()
+        }
+
+        let vector = CGPoint(x: end.x - start.x, y: end.y - start.y)
+        let startEndAngle: CGFloat
+        if (abs(vector.x) < 1.0e-7) {
+            startEndAngle = vector.y < 0 ? -CGFloat.pi / 2.0 : CGFloat.pi / 2.0
+        } else {
+            startEndAngle = atan(vector.y / vector.x) + (vector.x < 0 ? CGFloat.pi : 0)
+        }
+
+        let arrowAngle = CGFloat.pi * 1.0 / 6.0
+        let arrowLength = 0.1 * sqrt(vector.x * vector.x + vector.y * vector.y)
+        let arrowLine1 = CGPoint(x: end.x + arrowLength * cos(CGFloat.pi - startEndAngle + arrowAngle),
+                                 y: end.y - arrowLength * sin(CGFloat.pi - startEndAngle + arrowAngle))
+        let arrowLine2 = CGPoint(x: end.x + arrowLength * cos(CGFloat.pi - startEndAngle - arrowAngle),
+                                 y: end.y - arrowLength * sin(CGFloat.pi - startEndAngle - arrowAngle))
+
+        let path = UIBezierPath()
+        path.move(to: start)
+        path.addLine(to: end)
+
+        path.move(to: end)
+        path.addLine(to: arrowLine1)
+
+        path.move(to: end)
+        path.addLine(to: arrowLine2)
+
+        return path
+    }
+
+    // MARK: Images
 
     private func flattenToRecord() -> Canvas.Record {
         let renderer = UIGraphicsImageRenderer(bounds: bounds)

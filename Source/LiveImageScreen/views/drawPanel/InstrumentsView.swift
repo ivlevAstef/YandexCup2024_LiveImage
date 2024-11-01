@@ -35,6 +35,8 @@ final class InstrumentsView: UIView {
         return [pencilButton, brushButton, eraseButton]
     }
 
+    private var moreInstrumentsIsShown: Bool = false
+
     init() {
         super.init(frame: .zero)
 
@@ -53,10 +55,26 @@ final class InstrumentsView: UIView {
         moreButton.isEnabled = enabled
     }
 
+    func hidePopup() {
+        if moreInstrumentsIsShown {
+            hideMoreInstruments()
+        }
+    }
+
     func setParentView(_ view: UIView, superView: UIView) {
+        superView.addCSubview(moreInstrumentsView)
+
+        NSLayoutConstraint.activate([
+            moreInstrumentsView.bottomAnchor.constraint(equalTo: view.topAnchor, constant: -16.0),
+            moreInstrumentsView.centerXAnchor.constraint(equalTo: superView.centerXAnchor),
+            moreInstrumentsView.heightAnchor.constraint(equalToConstant: 64.0)
+        ])
     }
 
     private func commonInit() {
+        moreInstrumentsIsShown = false
+        moreInstrumentsView.isHidden = true
+
         addCSubview(pencilButton)
         addCSubview(brushButton)
         addCSubview(eraseButton)
@@ -68,10 +86,9 @@ final class InstrumentsView: UIView {
             }, for: .touchUpInside)
         }
 
-        // TODO: потом
-        //        moreButton.addAction(UIAction { [weak self] _ in
-        //            self?.showMoreInstruments()
-        //        }, for: .touchUpInside)
+        moreButton.addAction(UIAction { [weak self] _ in
+            self?.toggleMoreInstruments()
+        }, for: .touchUpInside)
 
         makeConstraints()
     }
@@ -94,6 +111,34 @@ final class InstrumentsView: UIView {
             moreButton.rightAnchor.constraint(equalTo: rightAnchor)
         ])
     }
+
+    private func showMoreInstruments() {
+        moreInstrumentsIsShown = true
+        moreButton.isSelected = true
+        moreInstrumentsView.isHidden = false
+        moreInstrumentsView.alpha = 0.0
+        UIView.animate(withDuration: 0.25, animations: {
+            self.moreInstrumentsView.alpha = 1.0
+        })
+    }
+
+    private func hideMoreInstruments() {
+        moreInstrumentsIsShown = false
+        moreButton.isSelected = false
+        UIView.animate(withDuration: 0.25, animations: {
+            self.moreInstrumentsView.alpha = 0.0
+        }, completion: { [weak self] _ in
+            self?.moreInstrumentsView.isHidden = true
+        })
+    }
+
+    private func toggleMoreInstruments() {
+        if moreInstrumentsIsShown {
+            hideMoreInstruments()
+        } else {
+            showMoreInstruments()
+        }
+    }
 }
 
 // TODO: пока не актуально, потом реализовать по возможности.
@@ -107,7 +152,14 @@ private final class MoreInstrumentsView: UIView {
         }
     }
 
-    fileprivate var instrumentsButton: [InstrumentButton] { [] }
+    private let blurEffectView = CustomIntensityVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterial), intensity: 0.3)
+
+    private let rectangleButton = InstrumentButton(instrument: .rectangle)
+    private let circleButton = InstrumentButton(instrument: .circle)
+    private let trianleButton = InstrumentButton(instrument: .triangle)
+    private let arrowButton = InstrumentButton(instrument: .arrow)
+    private let buttonsStackView = UIStackView(frame: .zero)
+    fileprivate var instrumentsButton: [InstrumentButton] { [rectangleButton, circleButton, trianleButton, arrowButton] }
 
     init() {
         super.init(frame: .zero)
@@ -121,6 +173,40 @@ private final class MoreInstrumentsView: UIView {
     }
 
     private func commonInit() {
+        layer.cornerCurve = .continuous
+        layer.cornerRadius = 16.0
+        layer.masksToBounds = true
+
+        addCSubview(blurEffectView)
+        addCSubview(buttonsStackView)
+
+        for button in instrumentsButton {
+            buttonsStackView.addArrangedSubview(button)
+            button.addAction(UIAction { [weak self, instrument = button.instrument] _ in
+                self?.selectInstrumentHandler?(instrument)
+            }, for: .touchUpInside)
+        }
+
+        buttonsStackView.axis = .horizontal
+        buttonsStackView.spacing = 16.0
+        buttonsStackView.distribution = .equalSpacing
+
+        makeConstraints()
+    }
+
+    private func makeConstraints() {
+        NSLayoutConstraint.activate([
+            blurEffectView.topAnchor.constraint(equalTo: topAnchor),
+            blurEffectView.leftAnchor.constraint(equalTo: leftAnchor),
+            blurEffectView.rightAnchor.constraint(equalTo: rightAnchor),
+            blurEffectView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+
+        NSLayoutConstraint.activate([
+            buttonsStackView.leftAnchor.constraint(equalTo: leftAnchor, constant: 16.0),
+            buttonsStackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -16.0),
+            buttonsStackView.centerYAnchor.constraint(equalTo: centerYAnchor)
+        ])
     }
 }
 
@@ -146,6 +232,10 @@ extension DrawInstrument {
         case .pencil: return UIImage(named: "pencil")
         case .brush: return UIImage(named: "brush")
         case .erase: return UIImage(named: "erase")
+        case .rectangle: return UIImage(named: "rectangle")
+        case .circle: return UIImage(named: "circle")
+        case .triangle: return UIImage(named: "triangle")
+        case .arrow: return UIImage(named: "arrow")
         }
     }
 }
