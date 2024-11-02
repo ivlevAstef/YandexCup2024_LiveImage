@@ -32,6 +32,16 @@
 		AB0316A22CD11D9C0064DD7A /* LiveImageFramesPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0316A12CD11D9C0064DD7A /* LiveImageFramesPanelView.swift */; };
 		AB6487FE2CD2A286003DE70C /* CanvasSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6487FD2CD2A27C003DE70C /* CanvasSize.swift */; };
 		AB6488002CD2ACC9003DE70C /* PlaySpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB6487FF2CD2ACC1003DE70C /* PlaySpeed.swift */; };
+		AB89A7AA2CD60BD500D15380 /* ObjectPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7A92CD60BD100D15380 /* ObjectPainter.swift */; };
+		AB89A7AD2CD60E1100D15380 /* PencilPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7AC2CD60E0600D15380 /* PencilPainter.swift */; };
+		AB89A7B02CD612AB00D15380 /* Painter+Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7AF2CD612A500D15380 /* Painter+Support.swift */; };
+		AB89A7B22CD6157400D15380 /* BrushPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B12CD6157000D15380 /* BrushPainter.swift */; };
+		AB89A7B42CD616B800D15380 /* ErasePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B32CD616B000D15380 /* ErasePainter.swift */; };
+		AB89A7B62CD61B7500D15380 /* RectanglePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B52CD61B7000D15380 /* RectanglePainter.swift */; };
+		AB89A7B82CD61CD300D15380 /* CirclePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B72CD61CCF00D15380 /* CirclePainter.swift */; };
+		AB89A7BA2CD61D1600D15380 /* TrianglePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B92CD61D0B00D15380 /* TrianglePainter.swift */; };
+		AB89A7BC2CD61D5800D15380 /* ArrowPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7BB2CD61D5400D15380 /* ArrowPainter.swift */; };
+		AB89A7BE2CD6227700D15380 /* EditableFigurePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7BD2CD6227200D15380 /* EditableFigurePainter.swift */; };
 		ABA629512CD3DAEF006AFDCB /* LiveImageShareGifPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA629502CD3DAD9006AFDCB /* LiveImageShareGifPresenter.swift */; };
 		ABA629552CD4965E006AFDCB /* LiveImageColorPickerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA629542CD49652006AFDCB /* LiveImageColorPickerPresenter.swift */; };
 		ABAD64352CD1F8C400A6BB9E /* RecordFrameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAD64342CD1F8C400A6BB9E /* RecordFrameCell.swift */; };
@@ -71,6 +81,16 @@
 		AB0316A12CD11D9C0064DD7A /* LiveImageFramesPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageFramesPanelView.swift; sourceTree = "<group>"; };
 		AB6487FD2CD2A27C003DE70C /* CanvasSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasSize.swift; sourceTree = "<group>"; };
 		AB6487FF2CD2ACC1003DE70C /* PlaySpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaySpeed.swift; sourceTree = "<group>"; };
+		AB89A7A92CD60BD100D15380 /* ObjectPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectPainter.swift; sourceTree = "<group>"; };
+		AB89A7AC2CD60E0600D15380 /* PencilPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PencilPainter.swift; sourceTree = "<group>"; };
+		AB89A7AF2CD612A500D15380 /* Painter+Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Painter+Support.swift"; sourceTree = "<group>"; };
+		AB89A7B12CD6157000D15380 /* BrushPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrushPainter.swift; sourceTree = "<group>"; };
+		AB89A7B32CD616B000D15380 /* ErasePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErasePainter.swift; sourceTree = "<group>"; };
+		AB89A7B52CD61B7000D15380 /* RectanglePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectanglePainter.swift; sourceTree = "<group>"; };
+		AB89A7B72CD61CCF00D15380 /* CirclePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclePainter.swift; sourceTree = "<group>"; };
+		AB89A7B92CD61D0B00D15380 /* TrianglePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrianglePainter.swift; sourceTree = "<group>"; };
+		AB89A7BB2CD61D5400D15380 /* ArrowPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowPainter.swift; sourceTree = "<group>"; };
+		AB89A7BD2CD6227200D15380 /* EditableFigurePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableFigurePainter.swift; sourceTree = "<group>"; };
 		ABA629502CD3DAD9006AFDCB /* LiveImageShareGifPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageShareGifPresenter.swift; sourceTree = "<group>"; };
 		ABA629542CD49652006AFDCB /* LiveImageColorPickerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageColorPickerPresenter.swift; sourceTree = "<group>"; };
 		ABAD64342CD1F8C400A6BB9E /* RecordFrameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordFrameCell.swift; sourceTree = "<group>"; };
@@ -180,6 +200,7 @@
 		AB03168B2CCFCFF20064DD7A /* viewModels */ = {
 			isa = PBXGroup;
 			children = (
+				AB89A7AB2CD60C5F00D15380 /* figures */,
 				AB6487FF2CD2ACC1003DE70C /* PlaySpeed.swift */,
 				AB6487FD2CD2A27C003DE70C /* CanvasSize.swift */,
 				AB03168C2CCFD0050064DD7A /* LiveImageAction.swift */,
@@ -198,6 +219,23 @@
 				AB03169B2CCFFCDF0064DD7A /* InstrumentsView.swift */,
 			);
 			path = drawPanel;
+			sourceTree = "<group>";
+		};
+		AB89A7AB2CD60C5F00D15380 /* figures */ = {
+			isa = PBXGroup;
+			children = (
+				AB89A7BD2CD6227200D15380 /* EditableFigurePainter.swift */,
+				AB89A7BB2CD61D5400D15380 /* ArrowPainter.swift */,
+				AB89A7B92CD61D0B00D15380 /* TrianglePainter.swift */,
+				AB89A7B72CD61CCF00D15380 /* CirclePainter.swift */,
+				AB89A7B52CD61B7000D15380 /* RectanglePainter.swift */,
+				AB89A7B32CD616B000D15380 /* ErasePainter.swift */,
+				AB89A7B12CD6157000D15380 /* BrushPainter.swift */,
+				AB89A7AF2CD612A500D15380 /* Painter+Support.swift */,
+				AB89A7AC2CD60E0600D15380 /* PencilPainter.swift */,
+				AB89A7A92CD60BD100D15380 /* ObjectPainter.swift */,
+			);
+			path = figures;
 			sourceTree = "<group>";
 		};
 		ABA629532CD3E0F8006AFDCB /* support */ = {
@@ -295,33 +333,43 @@
 				AB03169E2CD0951E0064DD7A /* CanvasView.swift in Sources */,
 				AB0316822CCF993C0064DD7A /* UIColor+Hex.swift in Sources */,
 				AB03168F2CCFF3DB0064DD7A /* DrawPanelView.swift in Sources */,
+				AB89A7BC2CD61D5800D15380 /* ArrowPainter.swift in Sources */,
 				ABBE1B962CD15CE500D20F80 /* CustomIntensityVisualEffectView.swift in Sources */,
 				ABEA0FBE2CD1FC9300454EEC /* GenerateFrameCell.swift in Sources */,
 				ABAD64372CD1F90C00A6BB9E /* FramesCollectionView.swift in Sources */,
 				ABEA0FC02CD2260900454EEC /* LiveImageGeneratorPresenter.swift in Sources */,
 				AB0316A02CD097A10064DD7A /* Canvas.swift in Sources */,
 				AB03167C2CCF98930064DD7A /* LiveImageView.swift in Sources */,
+				AB89A7AA2CD60BD500D15380 /* ObjectPainter.swift in Sources */,
 				AB03167F2CCF98CC0064DD7A /* Colors.swift in Sources */,
 				AB03168A2CCFCA940064DD7A /* ActionPanelView.swift in Sources */,
 				AB0316932CCFF4F50064DD7A /* DrawColor.swift in Sources */,
 				AB03167A2CCF94B90064DD7A /* LiveImageRouter.swift in Sources */,
+				AB89A7BE2CD6227700D15380 /* EditableFigurePainter.swift in Sources */,
 				AB03168D2CCFD0050064DD7A /* LiveImageAction.swift in Sources */,
+				AB89A7B22CD6157400D15380 /* BrushPainter.swift in Sources */,
 				AB0316972CCFFB620064DD7A /* UIView+addCSubview.swift in Sources */,
 				AB03169A2CCFFCCC0064DD7A /* SelectedColorView.swift in Sources */,
 				AB6488002CD2ACC9003DE70C /* PlaySpeed.swift in Sources */,
 				AB0316862CCFC4140064DD7A /* LiveImagePresenter.swift in Sources */,
 				AB0316A22CD11D9C0064DD7A /* LiveImageFramesPanelView.swift in Sources */,
+				AB89A7BA2CD61D1600D15380 /* TrianglePainter.swift in Sources */,
+				AB89A7B62CD61B7500D15380 /* RectanglePainter.swift in Sources */,
 				AB0316732CCF93660064DD7A /* LiveImageViewController.swift in Sources */,
 				ABAD64352CD1F8C400A6BB9E /* RecordFrameCell.swift in Sources */,
 				ABA629512CD3DAEF006AFDCB /* LiveImageShareGifPresenter.swift in Sources */,
+				AB89A7B82CD61CD300D15380 /* CirclePainter.swift in Sources */,
 				ABEA0FBC2CD1FB6300454EEC /* AddFrameCell.swift in Sources */,
+				AB89A7AD2CD60E1100D15380 /* PencilPainter.swift in Sources */,
 				AB0316842CCF99790064DD7A /* Logger.swift in Sources */,
 				AB6487FE2CD2A286003DE70C /* CanvasSize.swift in Sources */,
+				AB89A7B02CD612AB00D15380 /* Painter+Support.swift in Sources */,
 				ABA629552CD4965E006AFDCB /* LiveImageColorPickerPresenter.swift in Sources */,
 				AB03169C2CCFFCDF0064DD7A /* InstrumentsView.swift in Sources */,
 				AB0316952CCFF7310064DD7A /* DefaultImageButton.swift in Sources */,
 				AB0316712CCF93660064DD7A /* AppDelegate.swift in Sources */,
 				AB0316722CCF93660064DD7A /* SceneDelegate.swift in Sources */,
+				AB89A7B42CD616B800D15380 /* ErasePainter.swift in Sources */,
 				AB0316912CCFF4590064DD7A /* DrawInstrument.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

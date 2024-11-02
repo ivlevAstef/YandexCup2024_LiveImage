@@ -47,12 +47,19 @@ final class LiveImageGeneratorPresenter {
     private func generateUseMoveFigure(canvasSize: CanvasSize, framesCount: Int) -> [Canvas.Record] {
         var result: [Canvas.Record] = []
 
-        let generatedView = GeneratedView(canvasSize: canvasSize)
-        if 0 == Int.random(in: 0...1) {
-            generatedView.makeSquareFigure()
-        } else {
-            generatedView.makeCircleFigure()
+        var figurePainter: EditableFigurePainter
+        switch Int.random(in: 0...2) {
+        case 0: figurePainter = RectanglePainter(cornerRadius: CGFloat(Int.random(in: 2..<20)))
+        case 1: figurePainter = CirclePainter()
+        case 2: figurePainter = TrianglePainter()
+        default: figurePainter = CirclePainter()
         }
+
+        figurePainter.movePoint(.zero)
+        figurePainter.movePoint(CGPoint(x: CGFloat(Int.random(in: 50..<80)), y: CGFloat(Int.random(in: 50..<80))))
+        figurePainter.color = UIColor.random()
+        figurePainter.fillColor = UIColor.random()
+        figurePainter.lineWidth = CGFloat(Int.random(in: 2..<5))
 
         let xRandInterval = 50..<max(51, (canvasSize.width - 50.0))
         let yRandInterval = 50..<max(51, (canvasSize.height - 50.0))
@@ -78,12 +85,12 @@ final class LiveImageGeneratorPresenter {
                 let progress = CGFloat(i) / CGFloat(framesInSeries)
                 let position = CGPoint(x: startPosition.x + progress * vector.x,
                                        y: startPosition.y + progress * vector.y)
-                generatedView.position = position
-                generatedView.rotate = startAngle + (endAngle - startAngle) * progress
-                generatedView.scale = CGPoint(x: startScale.x + (endScale.x - startScale.x) * progress,
+                figurePainter.position = position
+                figurePainter.rotate = startAngle + (endAngle - startAngle) * progress
+                figurePainter.scale = CGPoint(x: startScale.x + (endScale.x - startScale.x) * progress,
                                               y: startScale.y + (endScale.y - startScale.y) * progress)
                 autoreleasepool {
-                    result.append(generatedView.generateRecord())
+                    result.append(figurePainter.makeImage(on: canvasSize, from: nil).pngData()!)
                 }
             }
 
@@ -97,58 +104,5 @@ final class LiveImageGeneratorPresenter {
         }
 
         return result
-    }
-}
-
-private final class GeneratedView {
-    var position: CGPoint = .zero
-    var rotate: CGFloat = 0
-    var scale: CGPoint = CGPoint(x: 1.0, y: 1.0)
-
-    private let renderer: UIGraphicsImageRenderer
-    private let shapeLayer: CAShapeLayer = CAShapeLayer()
-
-    init(canvasSize: CanvasSize) {
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = canvasSize.scale
-        format.opaque = false
-        renderer = UIGraphicsImageRenderer(size: canvasSize.size, format: format)
-
-        shapeLayer.contentsScale = canvasSize.scale
-        shapeLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
-    }
-
-    func makeCircleFigure() {
-        let randomSize = CGFloat(Int.random(in: 50..<100))
-        let path = UIBezierPath(ovalIn: CGRect(origin: .zero, size: CGSize(width: randomSize, height: randomSize)))
-
-        shapeLayer.strokeColor = UIColor.random().cgColor
-        shapeLayer.fillColor = UIColor.random().cgColor
-        shapeLayer.lineWidth = CGFloat(Int.random(in: 2..<5))
-        shapeLayer.opacity = 1.0
-        shapeLayer.path = path.cgPath
-    }
-
-    func makeSquareFigure() {
-        let randomSize = CGFloat(Int.random(in: 50..<100))
-        let path = UIBezierPath(roundedRect: CGRect(origin: .zero, size: CGSize(width: randomSize, height: randomSize)),
-                                cornerRadius: CGFloat(Int.random(in: 2..<10)))
-
-        shapeLayer.strokeColor = UIColor.random().cgColor
-        shapeLayer.fillColor = UIColor.random().cgColor
-        shapeLayer.lineWidth = CGFloat(Int.random(in: 2..<5))
-        shapeLayer.opacity = 1.0
-        shapeLayer.path = path.cgPath
-    }
-
-    func generateRecord() -> Canvas.Record {
-        let resultPngData = renderer.pngData { rendererContext in
-            rendererContext.cgContext.translateBy(x: position.x, y: position.y)
-            rendererContext.cgContext.rotate(by: rotate)
-            rendererContext.cgContext.scaleBy(x: scale.x, y: scale.y)
-            shapeLayer.render(in: rendererContext.cgContext)
-        }
-
-        return resultPngData
     }
 }
