@@ -46,7 +46,9 @@ struct BrushPainter: EditableObjectPainter {
 
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
-        fillLayerWithoutShadow(on: canvasSize, layer: drawLayer)
+        drawLayer.contentsScale = canvasSize.scale
+        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
+        fillLayer(drawLayer)
         return drawLayer
     }
 
@@ -65,7 +67,9 @@ struct BrushPainter: EditableObjectPainter {
         return linePath
     }
 
-    private func fillLayerWithoutShadow(on canvasSize: CanvasSize, layer drawLayer: CAShapeLayer) {
+    private func fillLayerWithoutShadow(_ drawLayer: CAShapeLayer) {
+        drawLayer.shadowColor = nil
+        drawLayer.shadowOpacity = 0.0
         drawLayer.lineWidth = lineWidth * 0.8
         drawLayer.lineCap = .round
         drawLayer.strokeColor = color.cgColor
@@ -74,16 +78,13 @@ struct BrushPainter: EditableObjectPainter {
 
         let linePath = makeLinePath()
         drawLayer.path = linePath.cgPath
-
-        drawLayer.contentsScale = canvasSize.scale
-        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
     }
 }
 
 
 extension BrushPainter: OptimizeLayoutObjectPainter {
-    func fillLayer(on canvasSize: CanvasSize, layer drawLayer: CAShapeLayer) {
-        fillLayerWithoutShadow(on: canvasSize, layer: drawLayer)
+    func fillLayer(_ drawLayer: CAShapeLayer) {
+        fillLayerWithoutShadow(drawLayer)
 
         drawLayer.shadowColor = color.cgColor
         drawLayer.shadowOffset = .zero

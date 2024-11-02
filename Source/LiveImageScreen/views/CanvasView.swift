@@ -150,6 +150,9 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         backgroundImageView.contentMode = .scaleAspectFill
 
         drawView.layer.addSublayer(drawLayer)
+        drawLayer.contentsScale = canvasSize.scale
+        drawLayer.fillColor = UIColor.clear.cgColor
+        drawLayer.strokeColor = UIColor.clear.cgColor
 
         updateCurrentPainter()
 
@@ -214,7 +217,8 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     private func updateDrawLayer() {
         if let optimizedPainter = currentPainter as? OptimizeLayoutObjectPainter {
             currentRecordView.image = currentImage
-            optimizedPainter.fillLayer(on: canvasSize, layer: drawLayer)
+            drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
+            optimizedPainter.fillLayer(drawLayer)
         } else {
             currentRecordView.image = currentPainter?.makeImage(on: canvasSize, from: currentImage)
         }

@@ -45,7 +45,9 @@ struct ArrowPainter: EditableObjectPainter {
 
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
-        fillLayer(on: canvasSize, layer: drawLayer)
+        drawLayer.contentsScale = canvasSize.scale
+        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
+        fillLayer(drawLayer)
         return drawLayer
     }
 
@@ -85,7 +87,9 @@ struct ArrowPainter: EditableObjectPainter {
 
 
 extension ArrowPainter: OptimizeLayoutObjectPainter {
-    func fillLayer(on canvasSize: CanvasSize, layer drawLayer: CAShapeLayer) {
+    func fillLayer(_ drawLayer: CAShapeLayer) {
+        drawLayer.shadowColor = nil
+        drawLayer.shadowOpacity = 0.0
         drawLayer.lineWidth = lineWidth
         drawLayer.lineCap = .square
         drawLayer.strokeColor = color.cgColor
@@ -93,8 +97,5 @@ extension ArrowPainter: OptimizeLayoutObjectPainter {
         drawLayer.fillColor = UIColor.clear.cgColor
 
         drawLayer.path = makeArrowDrawPath().cgPath
-
-        drawLayer.contentsScale = canvasSize.scale
-        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
     }
 }

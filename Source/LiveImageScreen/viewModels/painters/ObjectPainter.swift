@@ -35,7 +35,7 @@ protocol EditableObjectPainter: ObjectPainter {
 }
 
 protocol OptimizeLayoutObjectPainter {
-    func fillLayer(on canvasSize: CanvasSize, layer: CAShapeLayer)
+    func fillLayer(_ drawLayer: CAShapeLayer)
 }
 
 protocol EditableFigurePainter: EditableObjectPainter {

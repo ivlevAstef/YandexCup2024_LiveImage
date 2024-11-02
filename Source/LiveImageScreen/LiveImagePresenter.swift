@@ -230,6 +230,7 @@ final class LiveImagePresenter {
 
         if view.action.framesIsShown {
             view.frames.update(recordOfFrames: canvas.anyRecords, canvasSize: view.canvas.canvasSize)
+            view.frames.selectedFrameIndex = canvas.currentFrameIndex
         }
 
         view.draw.setEnable(!isPlaying)
