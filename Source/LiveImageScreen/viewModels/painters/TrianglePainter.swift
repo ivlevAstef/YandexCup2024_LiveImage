@@ -46,18 +46,7 @@ struct TrianglePainter: EditableFigurePainter {
 
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
-
-        drawLayer.lineWidth = lineWidth
-        drawLayer.lineCap = .square
-        drawLayer.strokeColor = color.cgColor
-        drawLayer.opacity = 1.0
-        drawLayer.fillColor = fillColor.cgColor
-
-        drawLayer.path = makeTriangleDrawPath().cgPath
-
-        drawLayer.contentsScale = canvasSize.scale
-        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
-
+        fillLayer(on: canvasSize, layer: drawLayer)
         return drawLayer
     }
 
@@ -73,5 +62,21 @@ struct TrianglePainter: EditableFigurePainter {
         path.close()
 
         return path
+    }
+}
+
+
+extension TrianglePainter: OptimizeLayoutObjectPainter {
+    func fillLayer(on canvasSize: CanvasSize, layer drawLayer: CAShapeLayer) {
+        drawLayer.lineWidth = lineWidth
+        drawLayer.lineCap = .square
+        drawLayer.strokeColor = color.cgColor
+        drawLayer.opacity = 1.0
+        drawLayer.fillColor = fillColor.cgColor
+
+        drawLayer.path = makeTriangleDrawPath().cgPath
+
+        drawLayer.contentsScale = canvasSize.scale
+        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
     }
 }

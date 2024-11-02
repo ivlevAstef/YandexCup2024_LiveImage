@@ -41,10 +41,12 @@ final class LiveImageShareGifPresenter {
             log.assert("fail get current records for share gif - please setup `currentRecordsProvider`")
             return
         }
+        // ГИФКИ ДОЛЖНЫ бЫТЬ МАЛЕНЬКИМИ !!! :D нечего их scale х3 делать
+        let smallCanvasSize = CanvasSize(size: canvasSize.size, scale: 1.0)
 
         view.showProgress(text: "Creating Gif...")
         DispatchQueue.global().async { [weak self] in
-            let savedFileURL = Self.save(records: currentRecords, canvasSize: canvasSize, filename: "animation.gif")
+            let savedFileURL = Self.save(records: currentRecords, canvasSize: smallCanvasSize, filename: "animation.gif")
             DispatchQueue.main.async {
                 self?.view.endProgress(completion: {
                     guard let savedFileURL else {

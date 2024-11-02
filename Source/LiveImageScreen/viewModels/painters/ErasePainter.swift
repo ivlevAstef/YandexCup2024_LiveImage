@@ -15,14 +15,14 @@ struct ErasePainter: EditableObjectPainter {
     var rotate: CGFloat = 0.0
     var scale: CGPoint = CGPoint(x: 1.0, y: 1.0)
 
-    private var line = SmoothLine()
+    private var points: [CGPoint] = []
 
     mutating func clean() {
-        line = SmoothLine()
+        points.removeAll()
     }
 
     mutating func movePoint(_ point: CGPoint) {
-        line.addPoint(point)
+        points.append(point)
     }
 
     func makeImage(on canvasSize: CanvasSize, from image: UIImage?) -> UIImage {
@@ -39,7 +39,6 @@ struct ErasePainter: EditableObjectPainter {
             rendererContext.cgContext.setAlpha(1.0)
             rendererContext.cgContext.setLineWidth(lineWidth * 2.0)
 
-            let points = line.resultPoints
             if let firstPoint = points.first {
                 rendererContext.cgContext.move(to: firstPoint)
                 for point in points.dropFirst() {

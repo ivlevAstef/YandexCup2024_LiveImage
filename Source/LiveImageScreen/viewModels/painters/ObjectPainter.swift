@@ -33,3 +33,11 @@ protocol EditableObjectPainter: ObjectPainter {
     mutating func clean()
     mutating func movePoint(_ point: CGPoint)
 }
+
+protocol OptimizeLayoutObjectPainter {
+    func fillLayer(on canvasSize: CanvasSize, layer: CAShapeLayer)
+}
+
+protocol EditableFigurePainter: EditableObjectPainter {
+    var fillColor: UIColor { get set }
+}

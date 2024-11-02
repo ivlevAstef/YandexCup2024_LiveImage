@@ -55,6 +55,9 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     private let prevFrameRecordView = UIImageView(image: nil)
     private let currentRecordView = UIImageView(image: nil)
 
+    private let drawView = UIView(frame: .zero)
+    private let drawLayer = CAShapeLayer()
+
     private var playTimer: Timer?
 
     init() {
@@ -136,6 +139,7 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         addCSubview(backgroundImageView)
         addCSubview(prevFrameRecordView)
         addCSubview(currentRecordView)
+        addCSubview(drawView)
 
         isMultipleTouchEnabled = false
         layer.cornerRadius = 20.0
@@ -144,6 +148,8 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
 
         prevFrameRecordView.alpha = 0.3
         backgroundImageView.contentMode = .scaleAspectFill
+
+        drawView.layer.addSublayer(drawLayer)
 
         updateCurrentPainter()
 
@@ -168,6 +174,12 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
             currentRecordView.leftAnchor.constraint(equalTo: leftAnchor),
             currentRecordView.rightAnchor.constraint(equalTo: rightAnchor),
             currentRecordView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+        NSLayoutConstraint.activate([
+            drawView.topAnchor.constraint(equalTo: topAnchor),
+            drawView.leftAnchor.constraint(equalTo: leftAnchor),
+            drawView.rightAnchor.constraint(equalTo: rightAnchor),
+            drawView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 
@@ -200,6 +212,11 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     }
 
     private func updateDrawLayer() {
-        currentRecordView.image = currentPainter?.makeImage(on: canvasSize, from: currentImage)
+        if let optimizedPainter = currentPainter as? OptimizeLayoutObjectPainter {
+            currentRecordView.image = currentImage
+            optimizedPainter.fillLayer(on: canvasSize, layer: drawLayer)
+        } else {
+            currentRecordView.image = currentPainter?.makeImage(on: canvasSize, from: currentImage)
+        }
     }
 }

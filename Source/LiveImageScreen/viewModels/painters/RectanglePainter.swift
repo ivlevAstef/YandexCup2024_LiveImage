@@ -52,18 +52,7 @@ struct RectanglePainter: EditableFigurePainter {
 
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
-
-        drawLayer.lineWidth = lineWidth
-        drawLayer.lineCap = .square
-        drawLayer.strokeColor = color.cgColor
-        drawLayer.opacity = 1.0
-        drawLayer.fillColor = fillColor.cgColor
-
-        drawLayer.path = makeRectangleDrawPath().cgPath
-
-        drawLayer.contentsScale = canvasSize.scale
-        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
-
+        fillLayer(on: canvasSize, layer: drawLayer)
         return drawLayer
     }
 
@@ -82,5 +71,21 @@ struct RectanglePainter: EditableFigurePainter {
             return UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
         }
         return UIBezierPath(rect: rect)
+    }
+}
+
+
+extension RectanglePainter: OptimizeLayoutObjectPainter {
+    func fillLayer(on canvasSize: CanvasSize, layer drawLayer: CAShapeLayer) {
+        drawLayer.lineWidth = lineWidth
+        drawLayer.lineCap = .square
+        drawLayer.strokeColor = color.cgColor
+        drawLayer.opacity = 1.0
+        drawLayer.fillColor = fillColor.cgColor
+
+        drawLayer.path = makeRectangleDrawPath().cgPath
+
+        drawLayer.contentsScale = canvasSize.scale
+        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
     }
 }

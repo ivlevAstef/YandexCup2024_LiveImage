@@ -46,18 +46,7 @@ struct CirclePainter: EditableFigurePainter {
 
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
-
-        drawLayer.lineWidth = lineWidth
-        drawLayer.lineCap = .square
-        drawLayer.strokeColor = color.cgColor
-        drawLayer.opacity = 1.0
-        drawLayer.fillColor = fillColor.cgColor
-
-        drawLayer.path = makeCircleDrawPath().cgPath
-
-        drawLayer.contentsScale = canvasSize.scale
-        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
-
+        fillLayer(on: canvasSize, layer: drawLayer)
         return drawLayer
     }
 
@@ -73,5 +62,20 @@ struct CirclePainter: EditableFigurePainter {
         let size = max(maxX - minX, maxY - minY)
 
         return UIBezierPath(ovalIn: CGRect(x: minX, y: minY, width: size, height: size))
+    }
+}
+
+extension CirclePainter: OptimizeLayoutObjectPainter {
+    func fillLayer(on canvasSize: CanvasSize, layer drawLayer: CAShapeLayer) {
+        drawLayer.lineWidth = lineWidth
+        drawLayer.lineCap = .square
+        drawLayer.strokeColor = color.cgColor
+        drawLayer.opacity = 1.0
+        drawLayer.fillColor = fillColor.cgColor
+
+        drawLayer.path = makeCircleDrawPath().cgPath
+
+        drawLayer.contentsScale = canvasSize.scale
+        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
     }
 }

@@ -42,18 +42,7 @@ struct PencilPainter: EditableObjectPainter {
 
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
-        
-        drawLayer.lineWidth = lineWidth
-        drawLayer.lineCap = .square
-        drawLayer.strokeColor = color.cgColor
-        drawLayer.opacity = 1.0
-        drawLayer.fillColor = UIColor.clear.cgColor
-
-        drawLayer.path = makeLinePath().cgPath
-
-        drawLayer.contentsScale = canvasSize.scale
-        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
-
+        fillLayer(on: canvasSize, layer: drawLayer)
         return drawLayer
     }
 
@@ -70,5 +59,20 @@ struct PencilPainter: EditableObjectPainter {
         }
 
         return linePath
+    }
+}
+
+extension PencilPainter: OptimizeLayoutObjectPainter {
+    func fillLayer(on canvasSize: CanvasSize, layer drawLayer: CAShapeLayer) {
+        drawLayer.lineWidth = lineWidth
+        drawLayer.lineCap = .square
+        drawLayer.strokeColor = color.cgColor
+        drawLayer.opacity = 1.0
+        drawLayer.fillColor = UIColor.clear.cgColor
+
+        drawLayer.path = makeLinePath().cgPath
+
+        drawLayer.contentsScale = canvasSize.scale
+        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
     }
 }

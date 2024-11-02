@@ -41,7 +41,6 @@
 		AB89A7B82CD61CD300D15380 /* CirclePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B72CD61CCF00D15380 /* CirclePainter.swift */; };
 		AB89A7BA2CD61D1600D15380 /* TrianglePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B92CD61D0B00D15380 /* TrianglePainter.swift */; };
 		AB89A7BC2CD61D5800D15380 /* ArrowPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7BB2CD61D5400D15380 /* ArrowPainter.swift */; };
-		AB89A7BE2CD6227700D15380 /* EditableFigurePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7BD2CD6227200D15380 /* EditableFigurePainter.swift */; };
 		AB89A7C02CD62BAC00D15380 /* EmptyPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7BF2CD62BA800D15380 /* EmptyPainter.swift */; };
 		ABA629512CD3DAEF006AFDCB /* LiveImageShareGifPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA629502CD3DAD9006AFDCB /* LiveImageShareGifPresenter.swift */; };
 		ABA629552CD4965E006AFDCB /* LiveImageColorPickerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA629542CD49652006AFDCB /* LiveImageColorPickerPresenter.swift */; };
@@ -91,7 +90,6 @@
 		AB89A7B72CD61CCF00D15380 /* CirclePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclePainter.swift; sourceTree = "<group>"; };
 		AB89A7B92CD61D0B00D15380 /* TrianglePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrianglePainter.swift; sourceTree = "<group>"; };
 		AB89A7BB2CD61D5400D15380 /* ArrowPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowPainter.swift; sourceTree = "<group>"; };
-		AB89A7BD2CD6227200D15380 /* EditableFigurePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableFigurePainter.swift; sourceTree = "<group>"; };
 		AB89A7BF2CD62BA800D15380 /* EmptyPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyPainter.swift; sourceTree = "<group>"; };
 		ABA629502CD3DAD9006AFDCB /* LiveImageShareGifPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageShareGifPresenter.swift; sourceTree = "<group>"; };
 		ABA629542CD49652006AFDCB /* LiveImageColorPickerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageColorPickerPresenter.swift; sourceTree = "<group>"; };
@@ -202,6 +200,7 @@
 		AB03168B2CCFCFF20064DD7A /* viewModels */ = {
 			isa = PBXGroup;
 			children = (
+				AB89A7AF2CD612A500D15380 /* SmoothLine.swift */,
 				AB89A7AB2CD60C5F00D15380 /* painters */,
 				AB6487FF2CD2ACC1003DE70C /* PlaySpeed.swift */,
 				AB6487FD2CD2A27C003DE70C /* CanvasSize.swift */,
@@ -227,14 +226,12 @@
 			isa = PBXGroup;
 			children = (
 				AB89A7BF2CD62BA800D15380 /* EmptyPainter.swift */,
-				AB89A7BD2CD6227200D15380 /* EditableFigurePainter.swift */,
 				AB89A7BB2CD61D5400D15380 /* ArrowPainter.swift */,
 				AB89A7B92CD61D0B00D15380 /* TrianglePainter.swift */,
 				AB89A7B72CD61CCF00D15380 /* CirclePainter.swift */,
 				AB89A7B52CD61B7000D15380 /* RectanglePainter.swift */,
 				AB89A7B32CD616B000D15380 /* ErasePainter.swift */,
 				AB89A7B12CD6157000D15380 /* BrushPainter.swift */,
-				AB89A7AF2CD612A500D15380 /* SmoothLine.swift */,
 				AB89A7AC2CD60E0600D15380 /* PencilPainter.swift */,
 				AB89A7A92CD60BD100D15380 /* ObjectPainter.swift */,
 			);
@@ -349,7 +346,6 @@
 				AB89A7C02CD62BAC00D15380 /* EmptyPainter.swift in Sources */,
 				AB0316932CCFF4F50064DD7A /* DrawColor.swift in Sources */,
 				AB03167A2CCF94B90064DD7A /* LiveImageRouter.swift in Sources */,
-				AB89A7BE2CD6227700D15380 /* EditableFigurePainter.swift in Sources */,
 				AB03168D2CCFD0050064DD7A /* LiveImageAction.swift in Sources */,
 				AB89A7B22CD6157400D15380 /* BrushPainter.swift in Sources */,
 				AB0316972CCFFB620064DD7A /* UIView+addCSubview.swift in Sources */,

@@ -7,6 +7,3 @@
 
 import UIKit
 
-protocol EditableFigurePainter: EditableObjectPainter {
-    var fillColor: UIColor { get set }
-}

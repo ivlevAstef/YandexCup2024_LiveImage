@@ -37,28 +37,16 @@ struct BrushPainter: EditableObjectPainter {
             rendererContext.cgContext.rotate(by: rotate)
             rendererContext.cgContext.scaleBy(x: scale.x, y: scale.y)
             let drawLayer = makeLayer(on: canvasSize)
-            rendererContext.cgContext.setShadow(offset: CGSize(width: 1, height: 1), blur: lineWidth, color: color.cgColor)
+            rendererContext.cgContext.setShadow(offset: CGSize(width: 0, height: 0), blur: lineWidth, color: color.cgColor)
             drawLayer.render(in: rendererContext.cgContext)
-            rendererContext.cgContext.setShadow(offset: CGSize(width: -1, height: -1), blur: lineWidth, color: color.cgColor)
+            rendererContext.cgContext.setShadow(offset: CGSize(width: 0, height: 0), blur: lineWidth, color: color.cgColor)
             drawLayer.render(in: rendererContext.cgContext)
         }
     }
 
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
-        
-        drawLayer.lineWidth = lineWidth * 0.8
-        drawLayer.lineCap = .round
-        drawLayer.strokeColor = color.cgColor
-        drawLayer.opacity = 1.0
-        drawLayer.fillColor = UIColor.clear.cgColor
-
-        let linePath = makeLinePath()
-        drawLayer.path = linePath.cgPath
-
-        drawLayer.contentsScale = canvasSize.scale
-        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
-
+        fillLayerWithoutShadow(on: canvasSize, layer: drawLayer)
         return drawLayer
     }
 
@@ -75,5 +63,32 @@ struct BrushPainter: EditableObjectPainter {
         }
 
         return linePath
+    }
+
+    private func fillLayerWithoutShadow(on canvasSize: CanvasSize, layer drawLayer: CAShapeLayer) {
+        drawLayer.lineWidth = lineWidth * 0.8
+        drawLayer.lineCap = .round
+        drawLayer.strokeColor = color.cgColor
+        drawLayer.opacity = 1.0
+        drawLayer.fillColor = UIColor.clear.cgColor
+
+        let linePath = makeLinePath()
+        drawLayer.path = linePath.cgPath
+
+        drawLayer.contentsScale = canvasSize.scale
+        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
+    }
+}
+
+
+extension BrushPainter: OptimizeLayoutObjectPainter {
+    func fillLayer(on canvasSize: CanvasSize, layer drawLayer: CAShapeLayer) {
+        fillLayerWithoutShadow(on: canvasSize, layer: drawLayer)
+
+        drawLayer.shadowColor = color.cgColor
+        drawLayer.shadowOffset = .zero
+        drawLayer.shadowRadius = lineWidth * 0.35
+        drawLayer.shadowPath = drawLayer.path?.copy(strokingWithWidth: lineWidth * 1.3, lineCap: .round, lineJoin: .round, miterLimit: 0)
+        drawLayer.shadowOpacity = 1.0
     }
 }
