@@ -1,5 +1,5 @@
 //
-//  TrianglePainter.swift
+//  BrushPainter.swift
 //  LiveImage
 //
 //  Created by Alexander Ivlev on 02.11.2024.
@@ -7,26 +7,22 @@
 
 import UIKit
 
-struct TrianglePainter: EditableFigurePainter {
-    let instrument: DrawInstrument = .triangle
+struct BrushPainter: EditableObjectPainter {
+    let instrument: DrawInstrument = .brush
     var color: UIColor = .black
-    var fillColor: UIColor = .clear
     var lineWidth: CGFloat = 5.0
     var position: CGPoint = .zero
     var rotate: CGFloat = 0.0
     var scale: CGPoint = CGPoint(x: 1.0, y: 1.0)
 
-    private var firstPoint: CGPoint?
-    private var secondPoint: CGPoint?
+    private var line = SmoothLine()
 
     mutating func clean() {
-        firstPoint = nil
-        secondPoint = nil
+        line = SmoothLine()
     }
 
     mutating func movePoint(_ point: CGPoint) {
-        firstPoint = firstPoint ?? point
-        secondPoint = point
+        line.addPoint(point)
     }
 
     func makeImage(on canvasSize: CanvasSize, from image: UIImage?) -> UIImage {
@@ -40,19 +36,25 @@ struct TrianglePainter: EditableFigurePainter {
             rendererContext.cgContext.translateBy(x: position.x, y: position.y)
             rendererContext.cgContext.rotate(by: rotate)
             rendererContext.cgContext.scaleBy(x: scale.x, y: scale.y)
-            makeLayer(on: canvasSize).render(in: rendererContext.cgContext)
+            let drawLayer = makeLayer(on: canvasSize)
+            rendererContext.cgContext.setShadow(offset: CGSize(width: 1, height: 1), blur: lineWidth, color: color.cgColor)
+            drawLayer.render(in: rendererContext.cgContext)
+            rendererContext.cgContext.setShadow(offset: CGSize(width: -1, height: -1), blur: lineWidth, color: color.cgColor)
+            drawLayer.render(in: rendererContext.cgContext)
         }
     }
 
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
-        drawLayer.lineWidth = lineWidth
-        drawLayer.lineCap = .square
+        
+        drawLayer.lineWidth = lineWidth * 0.8
+        drawLayer.lineCap = .round
         drawLayer.strokeColor = color.cgColor
         drawLayer.opacity = 1.0
-        drawLayer.fillColor = fillColor.cgColor
+        drawLayer.fillColor = UIColor.clear.cgColor
 
-        drawLayer.path = makeTriangleDrawPath().cgPath
+        let linePath = makeLinePath()
+        drawLayer.path = linePath.cgPath
 
         drawLayer.contentsScale = canvasSize.scale
         drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
@@ -60,17 +62,18 @@ struct TrianglePainter: EditableFigurePainter {
         return drawLayer
     }
 
-    private func makeTriangleDrawPath() -> UIBezierPath {
-        guard let firstPoint = firstPoint, let secondPoint = secondPoint else {
-            return UIBezierPath()
+    private func makeLinePath() -> UIBezierPath {
+        let linePath = UIBezierPath()
+
+        let points = line.resultPoints
+        if let firstPoint = points.first {
+            linePath.move(to: firstPoint)
+
+            for point in points.dropFirst() {
+                linePath.addLine(to: point)
+            }
         }
 
-        let path = UIBezierPath()
-        path.move(to: firstPoint)
-        path.addLine(to: CGPoint(x: secondPoint.x, y: firstPoint.y))
-        path.addLine(to: CGPoint(x: (firstPoint.x + secondPoint.x) * 0.5, y: secondPoint.y))
-        path.close()
-
-        return path
+        return linePath
     }
 }

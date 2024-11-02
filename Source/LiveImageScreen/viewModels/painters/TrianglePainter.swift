@@ -1,5 +1,5 @@
 //
-//  CirclePainter.swift
+//  TrianglePainter.swift
 //  LiveImage
 //
 //  Created by Alexander Ivlev on 02.11.2024.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-struct CirclePainter: EditableFigurePainter {
-    let instrument: DrawInstrument = .circle
+struct TrianglePainter: EditableFigurePainter {
+    let instrument: DrawInstrument = .triangle
     var color: UIColor = .black
     var fillColor: UIColor = .clear
     var lineWidth: CGFloat = 5.0
@@ -46,13 +46,14 @@ struct CirclePainter: EditableFigurePainter {
 
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
+
         drawLayer.lineWidth = lineWidth
         drawLayer.lineCap = .square
         drawLayer.strokeColor = color.cgColor
         drawLayer.opacity = 1.0
         drawLayer.fillColor = fillColor.cgColor
 
-        drawLayer.path = makeCircleDrawPath().cgPath
+        drawLayer.path = makeTriangleDrawPath().cgPath
 
         drawLayer.contentsScale = canvasSize.scale
         drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
@@ -60,17 +61,17 @@ struct CirclePainter: EditableFigurePainter {
         return drawLayer
     }
 
-    private func makeCircleDrawPath() -> UIBezierPath {
+    private func makeTriangleDrawPath() -> UIBezierPath {
         guard let firstPoint = firstPoint, let secondPoint = secondPoint else {
             return UIBezierPath()
         }
 
-        let minX = min(firstPoint.x, secondPoint.x)
-        let minY = min(firstPoint.y, secondPoint.y)
-        let maxX = max(firstPoint.x, secondPoint.x)
-        let maxY = max(firstPoint.y, secondPoint.y)
-        let size = max(maxX - minX, maxY - minY)
+        let path = UIBezierPath()
+        path.move(to: firstPoint)
+        path.addLine(to: CGPoint(x: secondPoint.x, y: firstPoint.y))
+        path.addLine(to: CGPoint(x: (firstPoint.x + secondPoint.x) * 0.5, y: secondPoint.y))
+        path.close()
 
-        return UIBezierPath(ovalIn: CGRect(x: minX, y: minY, width: size, height: size))
+        return path
     }
 }

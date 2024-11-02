@@ -82,9 +82,8 @@ final class FramesCollectionView: UICollectionView, UICollectionViewDelegate, UI
             return .zero
         }
 
-        let width = FramesConsts.imageHeight * canvasSize.width / canvasSize.height
-
-        return CGSize(width: width + 2 * FramesConsts.itemSpacing, height: FramesConsts.itemHeight)
+        let imageSize = calculateImageSize(for: canvasSize)
+        return CGSize(width: imageSize.width + 2 * FramesConsts.itemSpacing, height: imageSize.height)
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -98,10 +97,10 @@ final class FramesCollectionView: UICollectionView, UICollectionViewDelegate, UI
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let frameCell = cell as? RecordFrameCell {
+        if let canvasSize, let frameCell = cell as? RecordFrameCell {
             let record = recordOfFrames[indexPath.row]
 
-            frameCell.setImage(record.toImage)
+            frameCell.setImage(record.makeImage(canvasSize: canvasSize))
             frameCell.setIsCurrent(selectedFrameIndex == indexPath.row)
             frameCell.canDelete = recordOfFrames.count > 1
 
@@ -125,5 +124,11 @@ final class FramesCollectionView: UICollectionView, UICollectionViewDelegate, UI
         } else {
             generateFramesHandler?()
         }
+    }
+
+    private func calculateImageSize(for canvasSize: CanvasSize) -> CGSize {
+        let width = FramesConsts.imageHeight * canvasSize.width / canvasSize.height
+
+        return CGSize(width: width, height: FramesConsts.itemHeight)
     }
 }

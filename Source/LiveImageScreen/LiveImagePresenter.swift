@@ -49,7 +49,6 @@ protocol LiveImageCanvasViewProtocol: AnyObject {
     var currentRecord: Canvas.Record? { get set }
 
     var canvasSize: CanvasSize { get }
-    var emptyRecord: Canvas.Record { get }
 
     func runPlay(_ records: [Canvas.Record])
     func stopPlay()
@@ -115,11 +114,11 @@ final class LiveImagePresenter {
         subscribeDraw()
         subscribeFrames()
 
-        shareGifPresenter.currentRecordsProvider = { [weak self] in
-            if let self {
-                return self.canvas.anyRecords(emptyRecord: self.view.canvas.emptyRecord)
+        shareGifPresenter.currentRecordInfoProvider = { [weak self] in
+            guard let self else {
+                return nil
             }
-            return []
+            return (self.view.canvas.canvasSize, self.canvas.anyRecords)
         }
     }
 
@@ -230,8 +229,7 @@ final class LiveImagePresenter {
         view.canvas.currentRecord = canvas.currentFrame.currentRecord
 
         if view.action.framesIsShown {
-            view.frames.update(recordOfFrames: canvas.anyRecords(emptyRecord: view.canvas.emptyRecord),
-                               canvasSize: view.canvas.canvasSize)
+            view.frames.update(recordOfFrames: canvas.anyRecords, canvasSize: view.canvas.canvasSize)
         }
 
         view.draw.setEnable(!isPlaying)
@@ -282,7 +280,7 @@ final class LiveImagePresenter {
 
         isPlaying = true
         view.canvas.fps = speed.fps
-        view.canvas.runPlay(canvas.recordsForPlay(emptyRecord: view.canvas.emptyRecord))
+        view.canvas.runPlay(canvas.recordsForPlay)
         if view.action.framesIsShown {
             hideFramesView()
         }

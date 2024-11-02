@@ -89,9 +89,7 @@ final class LiveImageGeneratorPresenter {
                 figurePainter.rotate = startAngle + (endAngle - startAngle) * progress
                 figurePainter.scale = CGPoint(x: startScale.x + (endScale.x - startScale.x) * progress,
                                               y: startScale.y + (endScale.y - startScale.y) * progress)
-                autoreleasepool {
-                    result.append(figurePainter.makeImage(on: canvasSize, from: nil).pngData()!)
-                }
+                result.append(Canvas.Record(painter: figurePainter))
             }
 
             startPosition = endPosition

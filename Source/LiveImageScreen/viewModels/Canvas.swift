@@ -15,10 +15,15 @@ private enum Consts {
 }
 
 struct Canvas {
-    /// PNG. Вообще изначально было UIImage. Но оно просто подыхала если генерировать по 1000 кадров.
-    /// C PNG без проблем 10000 кадров выдерживает, в адекватные сроки генерации.
-    /// И в целом даже смог 100000 кадров сгенерировать, но ждать пришлось долго, что в целом не удивительно - это 55минут видео при 30 кадрах в секунду.
-    typealias Record = Data
+    struct Record {
+        let painter: ObjectPainter
+        let oldState: Data? // PNG Data
+
+        init(painter: ObjectPainter, oldState: Data? = nil) {
+            self.painter = painter
+            self.oldState = oldState
+        }
+    }
 
     final class Frame {
         var currentRecord: Record? { records.indices.contains(currentRecordIndex) ? records[currentRecordIndex] : nil }
@@ -160,22 +165,19 @@ struct Canvas {
 }
 
 extension Canvas {
-    func recordsForPlay(emptyRecord: Canvas.Record) -> [Canvas.Record] {
+    var recordsForPlay: [Canvas.Record] {
         let frames = frames.suffix(from: currentFrameIndex) + frames.prefix(currentFrameIndex)
-        return frames.map { $0.currentRecord ?? emptyRecord }
+        return frames.map { $0.currentRecord ?? Record(painter: EmptyPainter()) }
     }
 
-    func anyRecords(emptyRecord: Canvas.Record) -> [Canvas.Record] {
-        return frames.map { $0.currentRecord ?? emptyRecord }
+    var anyRecords: [Canvas.Record] {
+        return frames.map { $0.currentRecord ?? Record(painter: EmptyPainter()) }
     }
 }
 
 extension Canvas.Record {
-    var toImage: UIImage? {
-        if let image = UIImage(data: self) {
-            return image
-        }
-        log.assert("fail make image by record data")
-        return nil
+    func makeImage(canvasSize: CanvasSize) -> UIImage? {
+        let prevImage = oldState.flatMap { UIImage(data: $0) }
+        return painter.makeImage(on: canvasSize, from: prevImage)
     }
 }

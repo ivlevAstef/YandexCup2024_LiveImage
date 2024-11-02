@@ -33,13 +33,13 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
 
     var prevFrameRecord: Canvas.Record? {
         didSet {
-            prevFrameRecordView.image = prevFrameRecord?.toImage
+            prevFrameRecordView.image = prevFrameRecord?.makeImage(canvasSize: canvasSize)
         }
     }
 
     var currentRecord: Canvas.Record? {
         didSet {
-            currentImage = currentRecord?.toImage
+            currentImage = currentRecord?.makeImage(canvasSize: canvasSize)
             currentRecordView.image = currentImage
         }
     }
@@ -47,8 +47,6 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     var canvasSize: CanvasSize {
         return CanvasSize(size: bounds.size, scale: UIScreen.main.scale)
     }
-
-    var emptyRecord: Canvas.Record { return generateEmptyRecord() }
 
     private var currentImage: UIImage?
     private var currentPainter: EditableObjectPainter?
@@ -87,12 +85,12 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         isUserInteractionEnabled = false
 
         var recordIndex = 0
-        currentRecordView.image = records[recordIndex].toImage
+        currentRecordView.image = records[recordIndex].makeImage(canvasSize: canvasSize)
 
         playTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / Double(fps), repeats: true, block: { [weak self] _ in
             recordIndex = (recordIndex + 1) % records.count
             if let self {
-                self.currentRecordView.image = records[recordIndex].toImage
+                self.currentRecordView.image = records[recordIndex].makeImage(canvasSize: canvasSize)
             }
         })
     }
@@ -123,9 +121,13 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let newRecord = flattenToRecord()
+        guard let currentPainter else {
+            return
+        }
+
+        let newRecord = Canvas.Record(painter: currentPainter, oldState: currentImage?.pngData())
         recordMakedHandler?(newRecord)
-        currentPainter?.clean()
+        self.currentPainter?.clean()
         updateDrawLayer()
     }
 
@@ -199,16 +201,5 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
 
     private func updateDrawLayer() {
         currentRecordView.image = currentPainter?.makeImage(on: canvasSize, from: currentImage)
-    }
-
-    // MARK: Images
-
-    private func flattenToRecord() -> Canvas.Record {
-        return currentRecordView.image?.pngData() ?? generateEmptyRecord()
-    }
-
-    private func generateEmptyRecord() -> Canvas.Record {
-        let renderer = UIGraphicsImageRenderer(bounds: bounds)
-        return renderer.pngData { _ in }
     }
 }

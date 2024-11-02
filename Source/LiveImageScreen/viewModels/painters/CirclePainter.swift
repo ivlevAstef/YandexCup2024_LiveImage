@@ -1,5 +1,5 @@
 //
-//  BrushPainter.swift
+//  CirclePainter.swift
 //  LiveImage
 //
 //  Created by Alexander Ivlev on 02.11.2024.
@@ -7,22 +7,26 @@
 
 import UIKit
 
-struct BrushPainter: EditableObjectPainter {
-    let instrument: DrawInstrument = .brush
+struct CirclePainter: EditableFigurePainter {
+    let instrument: DrawInstrument = .circle
     var color: UIColor = .black
+    var fillColor: UIColor = .clear
     var lineWidth: CGFloat = 5.0
     var position: CGPoint = .zero
     var rotate: CGFloat = 0.0
     var scale: CGPoint = CGPoint(x: 1.0, y: 1.0)
 
-    private var points: [CGPoint] = []
+    private var firstPoint: CGPoint?
+    private var secondPoint: CGPoint?
 
     mutating func clean() {
-        points.removeAll()
+        firstPoint = nil
+        secondPoint = nil
     }
 
     mutating func movePoint(_ point: CGPoint) {
-        points.append(point)
+        firstPoint = firstPoint ?? point
+        secondPoint = point
     }
 
     func makeImage(on canvasSize: CanvasSize, from image: UIImage?) -> UIImage {
@@ -36,21 +40,20 @@ struct BrushPainter: EditableObjectPainter {
             rendererContext.cgContext.translateBy(x: position.x, y: position.y)
             rendererContext.cgContext.rotate(by: rotate)
             rendererContext.cgContext.scaleBy(x: scale.x, y: scale.y)
-            rendererContext.cgContext.setShadow(offset: .zero, blur: lineWidth * 0.4, color: color.cgColor)
             makeLayer(on: canvasSize).render(in: rendererContext.cgContext)
         }
     }
 
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
-        drawLayer.lineWidth = lineWidth * 0.6
-        drawLayer.lineCap = .round
+
+        drawLayer.lineWidth = lineWidth
+        drawLayer.lineCap = .square
         drawLayer.strokeColor = color.cgColor
         drawLayer.opacity = 1.0
-        drawLayer.fillColor = UIColor.clear.cgColor
+        drawLayer.fillColor = fillColor.cgColor
 
-        let linePath = makeLinePath()
-        drawLayer.path = linePath.cgPath
+        drawLayer.path = makeCircleDrawPath().cgPath
 
         drawLayer.contentsScale = canvasSize.scale
         drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
@@ -58,18 +61,17 @@ struct BrushPainter: EditableObjectPainter {
         return drawLayer
     }
 
-    private func makeLinePath() -> UIBezierPath {
-        let linePath = UIBezierPath()
-        let smoothPoints = points.smooth
-
-        if let firstPoint = smoothPoints.first {
-            linePath.move(to: firstPoint)
-
-            for point in smoothPoints.dropFirst() {
-                linePath.addLine(to: point)
-            }
+    private func makeCircleDrawPath() -> UIBezierPath {
+        guard let firstPoint = firstPoint, let secondPoint = secondPoint else {
+            return UIBezierPath()
         }
 
-        return linePath
+        let minX = min(firstPoint.x, secondPoint.x)
+        let minY = min(firstPoint.y, secondPoint.y)
+        let maxX = max(firstPoint.x, secondPoint.x)
+        let maxY = max(firstPoint.y, secondPoint.y)
+        let size = max(maxX - minX, maxY - minY)
+
+        return UIBezierPath(ovalIn: CGRect(x: minX, y: minY, width: size, height: size))
     }
 }

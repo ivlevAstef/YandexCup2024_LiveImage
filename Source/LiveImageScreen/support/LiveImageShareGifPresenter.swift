@@ -22,7 +22,7 @@ protocol LiveImageShareGifViewProtocol: AnyObject {
 }
 
 final class LiveImageShareGifPresenter {
-    var currentRecordsProvider: (() -> [Canvas.Record])?
+    var currentRecordInfoProvider: (() -> (CanvasSize, [Canvas.Record])?)?
 
     private let view: LiveImageShareGifViewProtocol
 
@@ -37,14 +37,14 @@ final class LiveImageShareGifPresenter {
     private func shareGif() {
         log.info("share gif file")
 
-        guard let currentRecords = currentRecordsProvider?() else {
+        guard let (canvasSize, currentRecords) = currentRecordInfoProvider?() else {
             log.assert("fail get current records for share gif - please setup `currentRecordsProvider`")
             return
         }
 
         view.showProgress(text: "Creating Gif...")
         DispatchQueue.global().async { [weak self] in
-            let savedFileURL = Self.save(records: currentRecords, filename: "animation.gif")
+            let savedFileURL = Self.save(records: currentRecords, canvasSize: canvasSize, filename: "animation.gif")
             DispatchQueue.main.async {
                 self?.view.endProgress(completion: {
                     guard let savedFileURL else {
@@ -58,7 +58,7 @@ final class LiveImageShareGifPresenter {
         }
     }
 
-    private static func save(records: [Canvas.Record], filename: String) -> URL? {
+    private static func save(records: [Canvas.Record], canvasSize: CanvasSize, filename: String) -> URL? {
         let destinationURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(filename)
 
         //create the file and set the file properties
@@ -85,7 +85,7 @@ final class LiveImageShareGifPresenter {
 
         for record in records {
             autoreleasepool {
-                if let cgImage = UIImage(data: record)?.cgImage {
+                if let cgImage = record.makeImage(canvasSize: canvasSize)?.cgImage {
                     CGImageDestinationAddImage(animatedGifFile, cgImage, frameProperties)
                 }
             }
