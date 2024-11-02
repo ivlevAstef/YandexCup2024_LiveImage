@@ -1,5 +1,5 @@
 //
-//  CirclePainter.swift
+//  OvalPainter.swift
 //  LiveImage
 //
 //  Created by Alexander Ivlev on 02.11.2024.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-struct CirclePainter: EditableFigurePainter {
-    let instrument: DrawInstrument = .circle
+struct OvalPainter: EditableFigurePainter {
+    let instrument: DrawInstrument = .oval
     var color: UIColor = .black
     var fillColor: UIColor = .clear
     var lineWidth: CGFloat = 5.0
@@ -22,11 +22,14 @@ struct CirclePainter: EditableFigurePainter {
     mutating func clean() {
         firstPoint = nil
         secondPoint = nil
+        position = .zero
     }
 
-    mutating func movePoint(_ point: CGPoint) {
-        firstPoint = firstPoint ?? point
-        secondPoint = point
+    mutating func movePoint(_ point: CGPoint, initialPoint: CGPoint) {
+        let min = CGPoint(x: min(initialPoint.x, point.x), y: min(initialPoint.y, point.y))
+        self.position = min
+        self.firstPoint = CGPoint(x: initialPoint.x - min.x, y: initialPoint.y - min.y)
+        self.secondPoint = CGPoint(x: point.x - min.x, y: point.y - min.y)
     }
 
     func makeImage(on canvasSize: CanvasSize, from image: UIImage?) -> UIImage {
@@ -53,21 +56,21 @@ struct CirclePainter: EditableFigurePainter {
     }
 
     private func makeCircleDrawPath() -> UIBezierPath {
-        guard let firstPoint = firstPoint, let secondPoint = secondPoint else {
-            return UIBezierPath()
+        var rect = calculateRectangle()
+        return UIBezierPath(ovalIn: rect)
+    }
+
+    private func calculateRectangle() -> CGRect {
+        if let firstPoint = firstPoint, let secondPoint = secondPoint {
+            let min = CGPoint(x: min(firstPoint.x, secondPoint.x), y: min(firstPoint.y, secondPoint.y))
+            let max = CGPoint(x: max(firstPoint.x, secondPoint.x), y: max(firstPoint.y, secondPoint.y))
+            return CGRect(x: 0, y: 0, width: max.x - min.x, height: max.y - min.y)
         }
-
-        let minX = min(firstPoint.x, secondPoint.x)
-        let minY = min(firstPoint.y, secondPoint.y)
-        let maxX = max(firstPoint.x, secondPoint.x)
-        let maxY = max(firstPoint.y, secondPoint.y)
-        let size = max(maxX - minX, maxY - minY)
-
-        return UIBezierPath(ovalIn: CGRect(x: minX, y: minY, width: size, height: size))
+        return .zero
     }
 }
 
-extension CirclePainter: OptimizeLayoutObjectPainter {
+extension OvalPainter: OptimizeLayoutObjectPainter {
     func fillLayer(_ drawLayer: CAShapeLayer) {
         drawLayer.shadowColor = nil
         drawLayer.shadowOpacity = 0.0
@@ -78,5 +81,9 @@ extension CirclePainter: OptimizeLayoutObjectPainter {
         drawLayer.fillColor = fillColor.cgColor
 
         drawLayer.path = makeCircleDrawPath().cgPath
+    }
+
+    func layerFrame() -> CGRect {
+        return calculateRectangle().offsetBy(dx: position.x, dy: position.y)
     }
 }

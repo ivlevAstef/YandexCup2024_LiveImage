@@ -26,13 +26,16 @@ struct RectanglePainter: EditableFigurePainter {
     }
 
     mutating func clean() {
+        position = .zero
         firstPoint = nil
         secondPoint = nil
     }
 
-    mutating func movePoint(_ point: CGPoint) {
-        firstPoint = firstPoint ?? point
-        secondPoint = point
+    mutating func movePoint(_ point: CGPoint, initialPoint: CGPoint) {
+        let min = CGPoint(x: min(initialPoint.x, point.x), y: min(initialPoint.y, point.y))
+        self.position = min
+        self.firstPoint = CGPoint(x: initialPoint.x - min.x, y: initialPoint.y - min.y)
+        self.secondPoint = CGPoint(x: point.x - min.x, y: point.y - min.y)
     }
 
     func makeImage(on canvasSize: CanvasSize, from image: UIImage?) -> UIImage {
@@ -53,26 +56,23 @@ struct RectanglePainter: EditableFigurePainter {
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
         drawLayer.contentsScale = canvasSize.scale
-        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
         fillLayer(drawLayer)
         return drawLayer
     }
 
     private func makeRectangleDrawPath() -> UIBezierPath {
-        guard let firstPoint = firstPoint, let secondPoint = secondPoint else {
-            return UIBezierPath()
-        }
-    
-        let minX = min(firstPoint.x, secondPoint.x)
-        let minY = min(firstPoint.y, secondPoint.y)
-        let maxX = max(firstPoint.x, secondPoint.x)
-        let maxY = max(firstPoint.y, secondPoint.y)
+        let rect = calculateRectangle()
+        return UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
+    }
 
-        let rect = CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
-        if cornerRadius > 0.0 {
-            return UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
+    private func calculateRectangle() -> CGRect {
+        if let firstPoint = firstPoint, let secondPoint = secondPoint {
+            let min = CGPoint(x: min(firstPoint.x, secondPoint.x), y: min(firstPoint.y, secondPoint.y))
+            let max = CGPoint(x: max(firstPoint.x, secondPoint.x), y: max(firstPoint.y, secondPoint.y))
+
+            return CGRect(x: 0, y: 0, width: max.x - min.x, height: max.y - min.y)
         }
-        return UIBezierPath(rect: rect)
+        return .zero
     }
 }
 
@@ -88,5 +88,9 @@ extension RectanglePainter: OptimizeLayoutObjectPainter {
         drawLayer.fillColor = fillColor.cgColor
 
         drawLayer.path = makeRectangleDrawPath().cgPath
+    }
+
+    func layerFrame() -> CGRect {
+        return calculateRectangle().offsetBy(dx: position.x, dy: position.y)
     }
 }

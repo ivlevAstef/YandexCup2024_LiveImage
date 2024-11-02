@@ -31,11 +31,12 @@ protocol EditableObjectPainter: ObjectPainter {
     var scale: CGPoint { get set }
 
     mutating func clean()
-    mutating func movePoint(_ point: CGPoint)
+    mutating func movePoint(_ point: CGPoint, initialPoint: CGPoint)
 }
 
 protocol OptimizeLayoutObjectPainter {
     func fillLayer(_ drawLayer: CAShapeLayer)
+    func layerFrame() -> CGRect
 }
 
 protocol EditableFigurePainter: EditableObjectPainter {

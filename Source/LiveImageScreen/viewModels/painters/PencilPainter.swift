@@ -16,12 +16,15 @@ struct PencilPainter: EditableObjectPainter {
     var scale: CGPoint = CGPoint(x: 1.0, y: 1.0)
 
     private var line = SmoothLine()
+    private var maxPoint: CGPoint = .zero
 
     mutating func clean() {
         line = SmoothLine()
     }
 
-    mutating func movePoint(_ point: CGPoint) {
+    mutating func movePoint(_ point: CGPoint, initialPoint: CGPoint) {
+        maxPoint.x = max(maxPoint.x, point.x)
+        maxPoint.y = max(maxPoint.y, point.y)
         line.addPoint(point)
     }
 
@@ -43,7 +46,6 @@ struct PencilPainter: EditableObjectPainter {
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
         drawLayer.contentsScale = canvasSize.scale
-        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
         fillLayer(drawLayer)
         return drawLayer
     }
@@ -75,5 +77,9 @@ extension PencilPainter: OptimizeLayoutObjectPainter {
         drawLayer.fillColor = UIColor.clear.cgColor
 
         drawLayer.path = makeLinePath().cgPath
+    }
+
+    func layerFrame() -> CGRect {
+        return CGRect(x: 0, y: 0, width: maxPoint.x, height: maxPoint.y)
     }
 }

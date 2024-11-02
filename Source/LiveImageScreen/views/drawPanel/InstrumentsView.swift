@@ -155,7 +155,7 @@ private final class MoreInstrumentsView: UIView {
     private let blurEffectView = CustomIntensityVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterial), intensity: 0.3)
 
     private let rectangleButton = InstrumentButton(instrument: .rectangle)
-    private let circleButton = InstrumentButton(instrument: .circle)
+    private let circleButton = InstrumentButton(instrument: .oval)
     private let trianleButton = InstrumentButton(instrument: .triangle)
     private let arrowButton = InstrumentButton(instrument: .arrow)
     private let buttonsStackView = UIStackView(frame: .zero)
@@ -233,7 +233,7 @@ extension DrawInstrument {
         case .brush: return UIImage(named: "brush")
         case .erase: return UIImage(named: "erase")
         case .rectangle: return UIImage(named: "rectangle")
-        case .circle: return UIImage(named: "circle")
+        case .oval: return UIImage(named: "circle")
         case .triangle: return UIImage(named: "triangle")
         case .arrow: return UIImage(named: "arrow")
         }

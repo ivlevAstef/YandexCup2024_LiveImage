@@ -55,6 +55,7 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     private let prevFrameRecordView = UIImageView(image: nil)
     private let currentRecordView = UIImageView(image: nil)
 
+    private var initialTouchPosition: CGPoint = .zero
     private let drawView = UIView(frame: .zero)
     private let drawLayer = CAShapeLayer()
 
@@ -110,8 +111,9 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         guard let newTouchPoint = touches.first?.location(in: self) else {
             return
         }
+        initialTouchPosition = newTouchPoint
         currentPainter?.clean()
-        currentPainter?.movePoint(newTouchPoint)
+        currentPainter?.movePoint(newTouchPoint, initialPoint: initialTouchPosition)
         updateDrawLayer()
     }
 
@@ -119,7 +121,7 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         guard let newTouchPoint = touches.first?.location(in: self) else {
             return
         }
-        currentPainter?.movePoint(newTouchPoint)
+        currentPainter?.movePoint(newTouchPoint, initialPoint: initialTouchPosition)
         updateDrawLayer()
     }
 
@@ -150,6 +152,8 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
         backgroundImageView.contentMode = .scaleAspectFill
 
         drawView.layer.addSublayer(drawLayer)
+        drawView.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        drawView.frame = .zero // при отрисовки он посчитается
         drawLayer.contentsScale = canvasSize.scale
         drawLayer.fillColor = UIColor.clear.cgColor
         drawLayer.strokeColor = UIColor.clear.cgColor
@@ -178,12 +182,6 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
             currentRecordView.rightAnchor.constraint(equalTo: rightAnchor),
             currentRecordView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-        NSLayoutConstraint.activate([
-            drawView.topAnchor.constraint(equalTo: topAnchor),
-            drawView.leftAnchor.constraint(equalTo: leftAnchor),
-            drawView.rightAnchor.constraint(equalTo: rightAnchor),
-            drawView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
     }
 
     // MARK: - Draw
@@ -198,8 +196,8 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
             currentPainter = ErasePainter()
         case .rectangle:
             currentPainter = RectanglePainter()
-        case .circle:
-            currentPainter = CirclePainter()
+        case .oval:
+            currentPainter = OvalPainter()
         case .triangle:
             currentPainter = TrianglePainter()
         case .arrow:
@@ -217,8 +215,8 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     private func updateDrawLayer() {
         if let optimizedPainter = currentPainter as? OptimizeLayoutObjectPainter {
             currentRecordView.image = currentImage
-            drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
             optimizedPainter.fillLayer(drawLayer)
+            drawView.frame = optimizedPainter.layerFrame()
         } else {
             currentRecordView.image = currentPainter?.makeImage(on: canvasSize, from: currentImage)
         }

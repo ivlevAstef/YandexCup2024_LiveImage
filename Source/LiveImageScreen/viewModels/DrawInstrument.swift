@@ -11,7 +11,7 @@ enum DrawInstrument: Hashable {
     case erase
 
     case rectangle
-    case circle
+    case oval
     case triangle
     case arrow
 }

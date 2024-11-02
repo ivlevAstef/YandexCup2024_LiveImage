@@ -50,13 +50,15 @@ final class LiveImageGeneratorPresenter {
         var figurePainter: EditableFigurePainter
         switch Int.random(in: 0...2) {
         case 0: figurePainter = RectanglePainter(cornerRadius: CGFloat(Int.random(in: 2..<20)))
-        case 1: figurePainter = CirclePainter()
+        case 1: figurePainter = OvalPainter()
         case 2: figurePainter = TrianglePainter()
-        default: figurePainter = CirclePainter()
+        default: figurePainter = OvalPainter()
         }
 
-        figurePainter.movePoint(.zero)
-        figurePainter.movePoint(CGPoint(x: CGFloat(Int.random(in: 50..<80)), y: CGFloat(Int.random(in: 50..<80))))
+        figurePainter.movePoint(.zero, initialPoint: .zero)
+        figurePainter.movePoint(CGPoint(x: CGFloat(Int.random(in: 50..<80)),
+                                        y: CGFloat(Int.random(in: 50..<80))),
+                                initialPoint: .zero)
         figurePainter.color = UIColor.random()
         figurePainter.fillColor = UIColor.random()
         figurePainter.lineWidth = CGFloat(Int.random(in: 2..<5))

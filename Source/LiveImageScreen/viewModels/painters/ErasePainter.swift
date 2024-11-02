@@ -21,7 +21,7 @@ struct ErasePainter: EditableObjectPainter {
         points.removeAll()
     }
 
-    mutating func movePoint(_ point: CGPoint) {
+    mutating func movePoint(_ point: CGPoint, initialPoint: CGPoint) {
         points.append(point)
     }
 

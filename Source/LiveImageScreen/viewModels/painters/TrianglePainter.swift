@@ -22,11 +22,14 @@ struct TrianglePainter: EditableFigurePainter {
     mutating func clean() {
         firstPoint = nil
         secondPoint = nil
+        position = .zero
     }
 
-    mutating func movePoint(_ point: CGPoint) {
-        firstPoint = firstPoint ?? point
-        secondPoint = point
+    mutating func movePoint(_ point: CGPoint, initialPoint: CGPoint) {
+        let min = CGPoint(x: min(initialPoint.x, point.x), y: min(initialPoint.y, point.y))
+        self.position = min
+        self.firstPoint = CGPoint(x: initialPoint.x - min.x, y: initialPoint.y - min.y)
+        self.secondPoint = CGPoint(x: point.x - min.x, y: point.y - min.y)
     }
 
     func makeImage(on canvasSize: CanvasSize, from image: UIImage?) -> UIImage {
@@ -47,7 +50,6 @@ struct TrianglePainter: EditableFigurePainter {
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
         drawLayer.contentsScale = canvasSize.scale
-        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
         fillLayer(drawLayer)
         return drawLayer
     }
@@ -65,6 +67,16 @@ struct TrianglePainter: EditableFigurePainter {
 
         return path
     }
+
+    private func calculateRectangle() -> CGRect {
+        if let firstPoint = firstPoint, let secondPoint = secondPoint {
+            let min = CGPoint(x: min(firstPoint.x, secondPoint.x), y: min(firstPoint.y, secondPoint.y))
+            let max = CGPoint(x: max(firstPoint.x, secondPoint.x), y: max(firstPoint.y, secondPoint.y))
+
+            return CGRect(x: 0, y: 0, width: max.x - min.x, height: max.y - min.y)
+        }
+        return .zero
+    }
 }
 
 
@@ -79,5 +91,9 @@ extension TrianglePainter: OptimizeLayoutObjectPainter {
         drawLayer.fillColor = fillColor.cgColor
 
         drawLayer.path = makeTriangleDrawPath().cgPath
+    }
+
+    func layerFrame() -> CGRect {
+        return calculateRectangle().offsetBy(dx: position.x, dy: position.y)
     }
 }

@@ -16,12 +16,15 @@ struct BrushPainter: EditableObjectPainter {
     var scale: CGPoint = CGPoint(x: 1.0, y: 1.0)
 
     private var line = SmoothLine()
+    private var maxPoint: CGPoint = .zero
 
     mutating func clean() {
         line = SmoothLine()
     }
 
-    mutating func movePoint(_ point: CGPoint) {
+    mutating func movePoint(_ point: CGPoint, initialPoint: CGPoint) {
+        maxPoint.x = max(maxPoint.x, point.x)
+        maxPoint.y = max(maxPoint.y, point.y)
         line.addPoint(point)
     }
 
@@ -47,8 +50,7 @@ struct BrushPainter: EditableObjectPainter {
     private func makeLayer(on canvasSize: CanvasSize) -> CAShapeLayer {
         let drawLayer = CAShapeLayer()
         drawLayer.contentsScale = canvasSize.scale
-        drawLayer.frame = CGRect(origin: .zero, size: canvasSize.size)
-        fillLayer(drawLayer)
+        fillLayerWithoutShadow(drawLayer)
         return drawLayer
     }
 
@@ -91,5 +93,9 @@ extension BrushPainter: OptimizeLayoutObjectPainter {
         drawLayer.shadowRadius = lineWidth * 0.35
         drawLayer.shadowPath = drawLayer.path?.copy(strokingWithWidth: lineWidth * 1.3, lineCap: .round, lineJoin: .round, miterLimit: 0)
         drawLayer.shadowOpacity = 1.0
+    }
+
+    func layerFrame() -> CGRect {
+        return CGRect(x: 0, y: 0, width: maxPoint.x, height: maxPoint.y)
     }
 }

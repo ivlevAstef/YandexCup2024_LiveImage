@@ -38,7 +38,7 @@
 		AB89A7B22CD6157400D15380 /* BrushPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B12CD6157000D15380 /* BrushPainter.swift */; };
 		AB89A7B42CD616B800D15380 /* ErasePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B32CD616B000D15380 /* ErasePainter.swift */; };
 		AB89A7B62CD61B7500D15380 /* RectanglePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B52CD61B7000D15380 /* RectanglePainter.swift */; };
-		AB89A7B82CD61CD300D15380 /* CirclePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B72CD61CCF00D15380 /* CirclePainter.swift */; };
+		AB89A7B82CD61CD300D15380 /* OvalPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B72CD61CCF00D15380 /* OvalPainter.swift */; };
 		AB89A7BA2CD61D1600D15380 /* TrianglePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B92CD61D0B00D15380 /* TrianglePainter.swift */; };
 		AB89A7BC2CD61D5800D15380 /* ArrowPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7BB2CD61D5400D15380 /* ArrowPainter.swift */; };
 		AB89A7C02CD62BAC00D15380 /* EmptyPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7BF2CD62BA800D15380 /* EmptyPainter.swift */; };
@@ -87,7 +87,7 @@
 		AB89A7B12CD6157000D15380 /* BrushPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrushPainter.swift; sourceTree = "<group>"; };
 		AB89A7B32CD616B000D15380 /* ErasePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErasePainter.swift; sourceTree = "<group>"; };
 		AB89A7B52CD61B7000D15380 /* RectanglePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectanglePainter.swift; sourceTree = "<group>"; };
-		AB89A7B72CD61CCF00D15380 /* CirclePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CirclePainter.swift; sourceTree = "<group>"; };
+		AB89A7B72CD61CCF00D15380 /* OvalPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OvalPainter.swift; sourceTree = "<group>"; };
 		AB89A7B92CD61D0B00D15380 /* TrianglePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrianglePainter.swift; sourceTree = "<group>"; };
 		AB89A7BB2CD61D5400D15380 /* ArrowPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowPainter.swift; sourceTree = "<group>"; };
 		AB89A7BF2CD62BA800D15380 /* EmptyPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyPainter.swift; sourceTree = "<group>"; };
@@ -228,7 +228,7 @@
 				AB89A7BF2CD62BA800D15380 /* EmptyPainter.swift */,
 				AB89A7BB2CD61D5400D15380 /* ArrowPainter.swift */,
 				AB89A7B92CD61D0B00D15380 /* TrianglePainter.swift */,
-				AB89A7B72CD61CCF00D15380 /* CirclePainter.swift */,
+				AB89A7B72CD61CCF00D15380 /* OvalPainter.swift */,
 				AB89A7B52CD61B7000D15380 /* RectanglePainter.swift */,
 				AB89A7B32CD616B000D15380 /* ErasePainter.swift */,
 				AB89A7B12CD6157000D15380 /* BrushPainter.swift */,
@@ -358,7 +358,7 @@
 				AB0316732CCF93660064DD7A /* LiveImageViewController.swift in Sources */,
 				ABAD64352CD1F8C400A6BB9E /* RecordFrameCell.swift in Sources */,
 				ABA629512CD3DAEF006AFDCB /* LiveImageShareGifPresenter.swift in Sources */,
-				AB89A7B82CD61CD300D15380 /* CirclePainter.swift in Sources */,
+				AB89A7B82CD61CD300D15380 /* OvalPainter.swift in Sources */,
 				ABEA0FBC2CD1FB6300454EEC /* AddFrameCell.swift in Sources */,
 				AB89A7AD2CD60E1100D15380 /* PencilPainter.swift in Sources */,
 				AB0316842CCF99790064DD7A /* Logger.swift in Sources */,
