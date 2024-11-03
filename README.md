@@ -7,7 +7,7 @@
 
 ## Демо
 
-[![demo_image](https://github.com/user-attachments/assets/828a52fb-7840-460b-8615-4b61e933bb38)](https://youtu.be/8fm-itiAQJM)
+[![demo_image](https://github.com/user-attachments/assets/828a52fb-7840-460b-8615-4b61e933bb38 | width=300)](https://youtu.be/8fm-itiAQJM)
 
 ## Условие
 Разработать мобильное приложение, в котором можно нарисовать и воспроизвести покадровую анимацию на экране смартфона.
