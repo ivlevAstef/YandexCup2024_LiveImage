@@ -7,6 +7,7 @@
 
 ## Демо
 
+По нажатию на картинку, отроется видео на YouTube, или можно просто перейти по ссылке: [https://youtu.be/8fm-itiAQJM](https://youtu.be/8fm-itiAQJM)
 [![demo_image](https://github.com/user-attachments/assets/fcd8d058-4204-4e95-a2fd-d876ce1a72b6)](https://youtu.be/8fm-itiAQJM)
 
 ## Условие
