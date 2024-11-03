@@ -42,6 +42,7 @@
 		AB89A7BA2CD61D1600D15380 /* TrianglePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7B92CD61D0B00D15380 /* TrianglePainter.swift */; };
 		AB89A7BC2CD61D5800D15380 /* ArrowPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7BB2CD61D5400D15380 /* ArrowPainter.swift */; };
 		AB89A7C02CD62BAC00D15380 /* EmptyPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7BF2CD62BA800D15380 /* EmptyPainter.swift */; };
+		AB89A7C22CD7BD1900D15380 /* SliderLineWidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB89A7C12CD7BD0A00D15380 /* SliderLineWidthView.swift */; };
 		ABA629512CD3DAEF006AFDCB /* LiveImageShareGifPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA629502CD3DAD9006AFDCB /* LiveImageShareGifPresenter.swift */; };
 		ABA629552CD4965E006AFDCB /* LiveImageColorPickerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABA629542CD49652006AFDCB /* LiveImageColorPickerPresenter.swift */; };
 		ABAD64352CD1F8C400A6BB9E /* RecordFrameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABAD64342CD1F8C400A6BB9E /* RecordFrameCell.swift */; };
@@ -91,6 +92,7 @@
 		AB89A7B92CD61D0B00D15380 /* TrianglePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrianglePainter.swift; sourceTree = "<group>"; };
 		AB89A7BB2CD61D5400D15380 /* ArrowPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowPainter.swift; sourceTree = "<group>"; };
 		AB89A7BF2CD62BA800D15380 /* EmptyPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyPainter.swift; sourceTree = "<group>"; };
+		AB89A7C12CD7BD0A00D15380 /* SliderLineWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderLineWidthView.swift; sourceTree = "<group>"; };
 		ABA629502CD3DAD9006AFDCB /* LiveImageShareGifPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageShareGifPresenter.swift; sourceTree = "<group>"; };
 		ABA629542CD49652006AFDCB /* LiveImageColorPickerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveImageColorPickerPresenter.swift; sourceTree = "<group>"; };
 		ABAD64342CD1F8C400A6BB9E /* RecordFrameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordFrameCell.swift; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 		AB0316872CCFCA3B0064DD7A /* views */ = {
 			isa = PBXGroup;
 			children = (
+				AB89A7C12CD7BD0A00D15380 /* SliderLineWidthView.swift */,
 				ABAD64332CD1F8B400A6BB9E /* framesPanel */,
 				AB0316982CCFFCBC0064DD7A /* drawPanel */,
 				AB0316682CCF93660064DD7A /* LiveImageViewController.swift */,
@@ -370,6 +373,7 @@
 				AB0316712CCF93660064DD7A /* AppDelegate.swift in Sources */,
 				AB0316722CCF93660064DD7A /* SceneDelegate.swift in Sources */,
 				AB89A7B42CD616B800D15380 /* ErasePainter.swift in Sources */,
+				AB89A7C22CD7BD1900D15380 /* SliderLineWidthView.swift in Sources */,
 				AB0316912CCFF4590064DD7A /* DrawInstrument.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

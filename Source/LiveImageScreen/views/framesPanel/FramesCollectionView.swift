@@ -57,6 +57,7 @@ final class FramesCollectionView: UICollectionView, UICollectionViewDelegate, UI
         dataSource = self
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

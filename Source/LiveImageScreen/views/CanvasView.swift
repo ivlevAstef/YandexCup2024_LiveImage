@@ -215,8 +215,11 @@ final class CanvasView: UIView, LiveImageCanvasViewProtocol {
     private func updateDrawLayer() {
         if let optimizedPainter = currentPainter as? OptimizeLayoutObjectPainter {
             currentRecordView.image = currentImage
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
             optimizedPainter.fillLayer(drawLayer)
             drawView.frame = optimizedPainter.layerFrame()
+            CATransaction.commit()
         } else {
             currentRecordView.image = currentPainter?.makeImage(on: canvasSize, from: currentImage)
         }

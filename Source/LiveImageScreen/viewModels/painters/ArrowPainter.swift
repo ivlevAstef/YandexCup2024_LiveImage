@@ -68,7 +68,8 @@ struct ArrowPainter: EditableObjectPainter {
         }
 
         let arrowAngle = CGFloat.pi * 1.0 / 6.0
-        let arrowLength = 0.1 * sqrt(vector.x * vector.x + vector.y * vector.y)
+        let procentLength = (lineWidth / 60.0)
+        let arrowLength = procentLength * sqrt(vector.x * vector.x + vector.y * vector.y)
         let arrowLine1 = CGPoint(x: end.x + arrowLength * cos(CGFloat.pi - startEndAngle + arrowAngle),
                                  y: end.y - arrowLength * sin(CGFloat.pi - startEndAngle + arrowAngle))
         let arrowLine2 = CGPoint(x: end.x + arrowLength * cos(CGFloat.pi - startEndAngle - arrowAngle),
@@ -104,7 +105,7 @@ extension ArrowPainter: OptimizeLayoutObjectPainter {
         drawLayer.shadowColor = nil
         drawLayer.shadowOpacity = 0.0
         drawLayer.lineWidth = lineWidth
-        drawLayer.lineCap = .square
+        drawLayer.lineCap = .round
         drawLayer.strokeColor = color.cgColor
         drawLayer.opacity = 1.0
         drawLayer.fillColor = UIColor.clear.cgColor

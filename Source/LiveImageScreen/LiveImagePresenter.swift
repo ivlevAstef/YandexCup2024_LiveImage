@@ -27,13 +27,18 @@ protocol LiveImageDrawViewProtocol: AnyObject {
 
     var selectedInstrument: DrawInstrument { get set }
     var selectedColor: DrawColor { get set }
-    var selectedWidth: CGFloat { get set }
 
     var shownColors: [DrawColor] { get set }
 
     func setEnable(_ enable: Bool)
 
     func hidePopup()
+}
+
+typealias LiveImageLineWidthChangedHandler = (CGFloat) -> Void
+protocol LiveImageLineWidthViewProtocol: AnyObject {
+    var lineWidthChangedHandler: LiveImageLineWidthChangedHandler? { get set }
+    var lineWidth: CGFloat { get set }
 }
 
 typealias LiveImageRecordMakedHandler = (Canvas.Record) -> Void
@@ -74,7 +79,7 @@ protocol LiveImageFramesViewProtocol: AnyObject {
     func hide()
 }
 
-protocol LiveImageViewProtocol: AnyObject {
+protocol LiveImageViewProtocol: LiveImageLineWidthViewProtocol {
     var action: LiveImageActionViewProtocol { get }
     var canvas: LiveImageCanvasViewProtocol { get }
     var draw: LiveImageDrawViewProtocol { get }
@@ -86,6 +91,8 @@ final class LiveImagePresenter {
     private let shareGifPresenter: LiveImageShareGifPresenter
     private let generatorPresenter: LiveImageGeneratorPresenter
     private let colorPickerPresenter: LiveImageColorPickerPresenter
+
+    private let instrumentsWidth = InstrumentsWidth()
 
     private var canvas: Canvas = Canvas()
 
@@ -102,7 +109,7 @@ final class LiveImagePresenter {
 
         // Начальное состояние
         view.draw.selectedInstrument = .pencil
-        view.draw.selectedWidth = 5.0
+        view.lineWidth = instrumentsWidth.getWidth(for: .pencil)
         colorPickerPresenter.currentColor = .black
 
         subscribe()
@@ -113,6 +120,13 @@ final class LiveImagePresenter {
         subscribeActions()
         subscribeDraw()
         subscribeFrames()
+
+        view.lineWidthChangedHandler = { [weak self] lineWidth in
+            if let self {
+                self.instrumentsWidth.setWidth(lineWidth, for: self.view.draw.selectedInstrument)
+                self.updateUI()
+            }
+        }
 
         shareGifPresenter.currentRecordInfoProvider = { [weak self] in
             guard let self else {
@@ -219,11 +233,9 @@ final class LiveImagePresenter {
     private func updateUI() {
         updateColors()
         view.canvas.instrument = view.draw.selectedInstrument
-        if view.draw.selectedInstrument == .erase { // Чтобы стирать было удобней, пока нет выбора ширины.
-            view.canvas.width = view.draw.selectedWidth * 2
-        } else {
-            view.canvas.width = view.draw.selectedWidth
-        }
+
+        view.lineWidth = instrumentsWidth.getWidth(for: view.draw.selectedInstrument)
+        view.canvas.width = view.lineWidth
 
         view.canvas.prevFrameRecord = canvas.prevFrame?.currentRecord
         view.canvas.currentRecord = canvas.currentFrame.currentRecord
@@ -311,5 +323,27 @@ final class LiveImagePresenter {
         view.canvas.color = colorPickerPresenter.currentColor
         view.draw.selectedColor = colorPickerPresenter.currentColor
         view.draw.shownColors = colorPickerPresenter.colorHistory
+    }
+}
+
+private final class InstrumentsWidth {
+    private var instrumentsWidth: [Set<DrawInstrument>: CGFloat] = [
+        Set([.pencil]): 5.0,
+        Set([.brush]): 5.0,
+        Set([.erase]): 10.0,
+        Set([.rectangle, .triangle, .oval, .arrow]): 3.0
+    ]
+
+    func getWidth(for instrument: DrawInstrument) -> CGFloat {
+        return instrumentsWidth.first(where: { $0.key.contains(instrument) })?.value ?? 5.0
+    }
+
+    func setWidth(_ width: CGFloat, for instrument: DrawInstrument) {
+        guard let key = instrumentsWidth.first(where: { $0.key.contains(instrument) })?.key else {
+            log.assert("Fail set width -> no found instrument \(instrument)")
+            return
+        }
+
+        instrumentsWidth[key] = width
     }
 }

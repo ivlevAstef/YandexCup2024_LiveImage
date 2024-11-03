@@ -91,7 +91,7 @@ extension BrushPainter: OptimizeLayoutObjectPainter {
         drawLayer.shadowColor = color.cgColor
         drawLayer.shadowOffset = .zero
         drawLayer.shadowRadius = lineWidth * 0.35
-        drawLayer.shadowPath = drawLayer.path?.copy(strokingWithWidth: lineWidth * 1.3, lineCap: .round, lineJoin: .round, miterLimit: 0)
+        drawLayer.shadowPath = drawLayer.path?.copy(strokingWithWidth: lineWidth * 1.25, lineCap: .round, lineJoin: .round, miterLimit: 0)
         drawLayer.shadowOpacity = 1.0
     }
 

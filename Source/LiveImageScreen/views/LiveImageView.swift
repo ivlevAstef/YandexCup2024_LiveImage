@@ -16,6 +16,16 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
 
     var shouldShareHandler: LiveImageShouldShareGifHandler?
 
+    var lineWidthChangedHandler: LiveImageLineWidthChangedHandler? {
+        get { sliderLineWidthView.widthChanged }
+        set { sliderLineWidthView.widthChanged = newValue }
+    }
+
+    var lineWidth: CGFloat {
+        get { sliderLineWidthView.selectedWidth }
+        set { sliderLineWidthView.selectedWidth = newValue }
+    }
+
     private let actionPanel = ActionPanelView()
     private let canvasView = CanvasView()
     private let shareButton = DefaultImageButton(
@@ -24,6 +34,7 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
     )
     private let drawPanel = DrawPanelView()
     private let framesPanel = LiveImageFramesPanelView()
+    private let sliderLineWidthView = SliderLineWidthView()
 
     init() {
         super.init(frame: .zero)
@@ -41,6 +52,7 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
 
         addCSubview(actionPanel)
         addCSubview(canvasView)
+        addCSubview(sliderLineWidthView)
         addCSubview(shareButton)
         addCSubview(drawPanel)
         addCSubview(framesPanel)
@@ -78,7 +90,10 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
             framesPanel.topAnchor.constraint(equalTo: topAnchor),
             framesPanel.leftAnchor.constraint(equalTo: leftAnchor),
             framesPanel.rightAnchor.constraint(equalTo: rightAnchor),
-            framesPanel.bottomAnchor.constraint(equalTo: bottomAnchor)
+            framesPanel.bottomAnchor.constraint(equalTo: bottomAnchor),
+
+            sliderLineWidthView.leftAnchor.constraint(equalTo: leftAnchor),
+            sliderLineWidthView.centerYAnchor.constraint(equalTo: canvasView.centerYAnchor, constant: 128.0)
         ])
     }
 
