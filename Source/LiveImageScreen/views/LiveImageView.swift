@@ -47,6 +47,12 @@ final class LiveImageView: UIView, LiveImageViewProtocol {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func setEnable(_ enable: Bool) {
+        drawPanel.setEnable(enable)
+        sliderLineWidthView.setEnable(enable)
+        shareButton.isEnabled = enable
+    }
+
     private func commonInit() {
         backgroundColor = Colors.backgroundColor
 

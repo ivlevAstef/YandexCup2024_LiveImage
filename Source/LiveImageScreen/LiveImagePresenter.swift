@@ -30,8 +30,6 @@ protocol LiveImageDrawViewProtocol: AnyObject {
 
     var shownColors: [DrawColor] { get set }
 
-    func setEnable(_ enable: Bool)
-
     func hidePopup()
 }
 
@@ -84,6 +82,8 @@ protocol LiveImageViewProtocol: LiveImageLineWidthViewProtocol {
     var canvas: LiveImageCanvasViewProtocol { get }
     var draw: LiveImageDrawViewProtocol { get }
     var frames: LiveImageFramesViewProtocol { get }
+
+    func setEnable(_ enable: Bool)
 }
 
 final class LiveImagePresenter {
@@ -245,7 +245,7 @@ final class LiveImagePresenter {
             view.frames.selectedFrameIndex = canvas.currentFrameIndex
         }
 
-        view.draw.setEnable(!isPlaying)
+        view.setEnable(!isPlaying)
 
         updateAvailableActions()
     }

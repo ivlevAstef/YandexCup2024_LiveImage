@@ -45,7 +45,12 @@ final class SliderLineWidthView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    func setEnable(_ enable: Bool) {
+        isUserInteractionEnabled = enable
+        isHidden = !enable
+    }
+
     private func commonInit() {
         addCSubview(sliderView)
         sliderView.addCSubview(circleView)
